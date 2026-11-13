@@ -59,7 +59,7 @@
     <div class="kick">D4 FINAL · 行政一組 蔡宗勳</div>
     <div class="big">模型健康日報</div>
     <div class="big" style="font-size:clamp(22px,4vw,36px)">只給我看<em>例外</em>，出事才叫我。</div>
-    <p class="mute">點右邊 › 或左右滑動翻頁。這份簡報可以下載到電腦，離線也能看。</p>
+    <p class="mute" id="hint">點右邊 › 或左右滑動翻頁。這份簡報可以下載到電腦，離線也能看。</p>
   </section>
 
   <section class="s">
@@ -151,11 +151,11 @@ document.getElementById('dl').onclick=async()=>{
 document.getElementById('print').onclick=()=>print();
 const h=parseInt(location.hash.slice(1));go(isNaN(h)?0:h-1);
 if(location.protocol==='file:')document.getElementById('open').href='https://model-health-daily.tzungshiun72.workers.dev/';
-// LINE 內建瀏覽器擋下載：在 LINE 裡改成「用外部瀏覽器打開」（LINE 官方參數 openExternalBrowser=1）
+// LINE 裡下載和列印都不會動（LIFF 也不理 openExternalBrowser）：只看簡報，下載交給圖文選單「簡報下載」那一格
 if(/\bLine\//i.test(navigator.userAgent)){
-  const dl=document.getElementById('dl');
-  dl.textContent='用瀏覽器開啟以下載';
-  dl.onclick=()=>{location.href=location.origin+'/slides?openExternalBrowser=1';};
+  document.getElementById('dl').remove();
+  document.getElementById('print').remove();
+  document.getElementById('hint').textContent='點右邊 › 或左右滑動翻頁。要下載，請用圖文選單的「簡報下載」。';
 }
 </script>
 </body>
