@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>模型健康日報</title>
+<script>
+// LIFF 帶路徑（liff.line.me/{id}/demo）時，LINE 會先開首頁並把路徑放在 liff.state；
+// 沒載 LIFF SDK，所以自己讀出來跳過去。只允許站內路徑，避免被拿去轉址到外部網站。
+(function(){ var s = new URLSearchParams(location.search).get("liff.state");
+  if (s && /^\/[A-Za-z0-9_\-\/.?=&%#]*$/.test(s) && s.indexOf("//") !== 0) location.replace(s); })();
+</script>
 <link rel="stylesheet" href="/style.css">
 <style>
   .hero{font-size:clamp(24px,6vw,34px);font-weight:800;line-height:1.3;margin:6px 0 2px}
