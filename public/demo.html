@@ -63,9 +63,10 @@
 </head>
 <body>
 <div class="bar"><b>模型健康日報｜90 秒 Demo</b>
-  <button id="play">⏸ 暫停</button><button id="tts">🔊 朗讀：關</button><button id="restart">↺ 重播</button>
+  <button id="play">⏸ 暫停</button><button id="tts" class="on">🔊 朗讀：開</button><button id="restart">↺ 重播</button>
   <button onclick="location.href='/slides'">📖 簡報／下載</button><button onclick="location.href='/'">打開工具</button></div>
 <div class="prog"><i id="prog"></i></div>
+<div id="tap" style="position:fixed;left:50%;bottom:22%;transform:translateX(-50%);z-index:9;background:#d4372c;color:#fff;padding:12px 20px;border-radius:999px;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,.5);cursor:pointer">🔊 點一下開啟旁白</div>
 <div class="stage">
   <div class="phone" id="phone">
     <div class="screen card-screen on" id="s-title">
@@ -117,7 +118,7 @@ const SCENES = [
   { s:"s-end",   sec:8,  h:"改一句話，一分鐘更新", p:"下一步：接真實紀錄前先遮資料、加登入，異常時才用 LINE 主動通知。" },
 ];
 const $ = id => document.getElementById(id), app = $("app");
-let i = -1, playing = true, tts = false, timer = null, t0 = 0, dur = 0, speaking = false;
+let i = -1, playing = true, tts = true, unlocked = false, timer = null, t0 = 0, dur = 0, speaking = false;
 
 function load(path){ return new Promise(r => { if (app.dataset.p === path) return r(); app.dataset.p = path; app.onload = () => setTimeout(r, 500); app.src = path; }); }
 async function focus(sel, top){
@@ -134,7 +135,7 @@ async function focus(sel, top){
 function hl(n){ const h = $("hl"); h.style.display = "block"; h.style.left = (n * 33.3) + "%"; }
 
 function speak(text){
-  if (!tts || !("speechSynthesis" in window)) return;
+  if (!tts || !unlocked || !("speechSynthesis" in window)) return;
   speechSynthesis.cancel(); speaking = true;
   const u = new SpeechSynthesisUtterance(text); u.lang = "zh-TW"; u.rate = 1.05;
   u.onend = u.onerror = () => { speaking = false; };
@@ -161,6 +162,11 @@ SCENES.forEach((_, n) => { const b = document.createElement("button"); b.setAttr
 $("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "⏸ 暫停" : "▶ 播放"; if (playing) { if (i === SCENES.length - 1 && Date.now() - t0 >= dur) go(0); t0 = Date.now() - 0; } else if (tts) speechSynthesis.cancel(); };
 $("tts").onclick = () => { tts = !tts; $("tts").textContent = "🔊 朗讀：" + (tts ? "開" : "關"); $("tts").classList.toggle("on", tts); if (tts) speak(SCENES[i].h + "。" + SCENES[i].p); else { speechSynthesis.cancel(); speaking = false; } };
 $("restart").onclick = () => { playing = true; $("play").textContent = "⏸ 暫停"; go(0); };
+// 瀏覽器要使用者先點過畫面才准發聲：第一次點擊時解鎖，從目前這一幕開始念
+function unlock(){ if (unlocked) return; unlocked = true; const t = document.getElementById("tap"); if (t) t.remove();
+  if (tts && i >= 0) { speak(SCENES[i].h + "。" + SCENES[i].p); t0 = Date.now(); } }
+addEventListener("pointerdown", unlock, { once: false });
+if (!("speechSynthesis" in window)) { const t = document.getElementById("tap"); if (t) t.remove(); tts = false; document.getElementById("tts").textContent = "🔇 此瀏覽器不支援朗讀"; }
 load("/");                 // 先把工具載進來，第三幕切過去就不用等
 go(0); timer = setInterval(tick, 200);
 </script>
