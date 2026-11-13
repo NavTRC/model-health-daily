@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo｜模型健康日報</title>
+<style>
+  :root{--bg:#0d0f12;--card:#161a20;--line:#2a2f37;--ink:#ece6da;--mute:#9097a0;--red:#d4372c;--amber:#e0a34a;--yellow:#c9a227;--green:#3fb37f;--blue:#48bfe8}
+  *{box-sizing:border-box} html,body{margin:0;height:100%}
+  body{background:radial-gradient(ellipse at top,#1a1f27,var(--bg) 60%);color:var(--ink);font:16px/1.5 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+  .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .bar b{flex:1;min-width:140px}
+  .bar button{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#1c2129;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .bar button.on{border-color:var(--red);background:#2a1715}
+  .prog{height:4px;background:var(--line)} .prog i{display:block;height:100%;width:0;background:var(--red);transition:width .3s linear}
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:16px;min-height:0}
+  .phone{position:relative;height:min(100%,760px);aspect-ratio:9/19;border-radius:36px;border:10px solid #2b3038;background:#000;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6);flex:none}
+  .screen{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}
+  .screen.on{opacity:1}
+  .screen iframe{width:100%;height:100%;border:0;background:var(--bg)}
+  .card-screen{display:flex;flex-direction:column;justify-content:center;padding:28px;background:var(--bg)}
+  .big{font-size:30px;font-weight:800;line-height:1.3}
+  .big em{font-style:normal;color:var(--red)}
+  .kick{font:12px ui-monospace,Consolas,monospace;letter-spacing:.14em;color:var(--red);margin-bottom:10px}
+  .stat{display:flex;gap:10px;margin-top:18px}
+  .stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:26px}
+  /* LINE 聊天室示意 */
+  .chat{display:flex;flex-direction:column;background:#8cabd9}
+  .chat .hd{background:#fff;color:#111;padding:12px;font-weight:700;text-align:center}
+  .chat .body{flex:1;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .bubble{background:#fff;color:#111;border-radius:14px;padding:10px 12px;max-width:85%;font-size:13px;line-height:1.5}
+  .menu{position:relative}
+  .menu img{display:block;width:100%}
+  .menu .hl{position:absolute;top:0;bottom:0;width:33.4%;border:4px solid #fff;box-shadow:0 0 0 4px var(--red),0 0 24px var(--red);border-radius:6px;animation:pulse 1.2s infinite;display:none}
+  @keyframes pulse{50%{box-shadow:0 0 0 4px var(--red),0 0 4px var(--red)}}
+  .menu .tab{background:#fff;color:#333;text-align:center;font-size:12px;padding:6px}
+  /* 管理頁示意 */
+  .admin{background:var(--bg);padding:16px}
+  .admin h4{margin:4px 0 10px}
+  .rep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px}
+  .rep .row{display:flex;gap:6px;margin-top:10px}
+  .rep .row span{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 0;font-size:13px}
+  .rep .row span.pick{border-color:var(--amber);color:var(--amber);animation:pulse2 1.2s infinite}
+  @keyframes pulse2{50%{background:#2a2215}}
+  .flow{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+  .flow span{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;font-weight:700;text-align:center}
+  .cap{width:min(420px,40vw)}
+  .cap .step{font:13px ui-monospace,Consolas,monospace;color:var(--red);letter-spacing:.1em}
+  .cap h2{margin:6px 0 10px;font-size:clamp(22px,2.6vw,32px);line-height:1.3}
+  .cap p{margin:0;font-size:clamp(16px,1.6vw,20px);color:#d6d0c4}
+  .dots{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
+  .dots button{width:12px;height:12px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}
+  .dots button.on{background:var(--red)}
+  .note{font-size:12px;color:var(--mute);margin-top:14px}
+  @media (max-width:760px){
+    .stage{flex-direction:column;gap:10px;padding:0}
+    .phone{height:auto;width:100%;flex:1;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
+    .cap{width:100%;padding:10px 14px 14px;background:rgba(13,15,18,.96);border-top:1px solid var(--line)}
+    .cap h2{font-size:19px;margin:2px 0 4px} .cap p{font-size:14px} .dots{margin-top:8px}
+  }
+</style>
+</head>
+<body>
+<div class="bar"><b>模型健康日報｜90 秒 Demo</b>
+  <button id="play">⏸ 暫停</button><button id="tts">🔊 朗讀：關</button><button id="restart">↺ 重播</button></div>
+<div class="prog"><i id="prog"></i></div>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="screen card-screen on" id="s-title">
+      <div class="kick">D4 FINAL · 行政一組 蔡宗勳</div>
+      <div class="big">模型上線後，<br>沒人每天盯。</div>
+      <div class="stat"><div><b>1 小時</b>每天早上</div><div><b>10 支</b>模型逐一看</div></div>
+      <div class="note">（課堂練習用的模擬數字）</div>
+    </div>
+    <div class="screen chat" id="s-line">
+      <div class="hd">模型健康日報</div>
+      <div class="body">
+        <div class="bubble">歡迎使用「模型健康日報」！<br>📊 點下方「打開工具」看今天哪幾支模型要人看<br>🛠 看到不對，點「聯絡負責人」回報</div>
+      </div>
+      <div class="menu"><img src="/richmenu.jpg" alt="圖文選單：打開工具、使用說明、聯絡負責人"><div class="hl" id="hl"></div><div class="tab">選單 ▾</div></div>
+    </div>
+    <div class="screen" id="s-app"><iframe id="app" title="模型健康日報"></iframe></div>
+    <div class="screen admin" id="s-admin">
+      <h4>回報管理（負責人）</h4>
+      <div class="note" style="margin:0 0 10px">示意畫面：實際管理頁需要密碼</div>
+      <div class="rep">
+        <div class="note" style="margin:0">新回報｜A 線 王工程師</div>
+        <b>VI-2 缺件檢測｜狀態判斷不對</b>
+        <div>今天顯示異常，但產線說今天有換料，應該先確認樣本。</div>
+        <div class="row"><span class="pick">處理中</span><span>已解決</span><span>不處理</span></div>
+      </div>
+      <div class="flow"><span>用的人回報</span><span>↓</span><span>負責人看到、判斷</span><span>↓</span><span>改狀態＋寫處理說明</span></div>
+    </div>
+    <div class="screen card-screen" id="s-end">
+      <div class="kick">HOW IT'S BUILT</div>
+      <div class="flow" style="margin-top:0"><span>AI 寫程式</span><span>GitHub 存</span><span>Cloudflare 自動上線</span><span>LINE 打開</span></div>
+      <div class="big" style="font-size:24px;margin-top:18px">只給我看<em>例外</em>，<br>出事才叫我。</div>
+      <div class="note">加好友：@271qphqz｜虛擬練習資料</div>
+    </div>
+  </div>
+  <div class="cap"><div class="step" id="step"></div><h2 id="h"></h2><p id="p"></p><div class="dots" id="dots"></div></div>
+</div>
+<script>
+// 每一幕：要顯示哪個畫面、要做什麼動作、字幕；秒數是沒有朗讀時的長度
+const SCENES = [
+  { s:"s-title", sec:8,  h:"痛點：模型上線後，沒人每天盯", p:"每天早上一小時，十支模型一支一支看；辨識率掉了，常常是客訴來了才發現。" },
+  { s:"s-line",  sec:7,  h:"在 LINE 裡打開", p:"加官方帳號好友，點下方「打開工具」，不用裝 App。", act:()=>hl(0) },
+  { s:"s-app",   sec:8,  h:"第一行就是結論", p:"五支模型，三支要人看。要人看的排最上面，正常的摺起來。", act:()=>focus(".hero",true) },
+  { s:"s-app",   sec:8,  h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料、相機位移或光源故障。", act:()=>focus("#need .card:nth-child(1)") },
+  { s:"s-app",   sec:8,  h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉；只看門檻會漏掉。", act:()=>focus("#need .card:nth-child(2)") },
+  { s:"s-app",   sec:8,  h:"黃色：資料異常", p:"AM-300 資料只進來平常的 3%，要先查資料，不要先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
+  { s:"s-app",   sec:10, h:"AI 只寫草稿，人做決定", p:"AI 摘要曾把掉 12.4 點寫成「略低」。所以判斷靠規則，重訓、回滾、停用由人決定。", act:()=>focus(".ai",true) },
+  { s:"s-app",   sec:8,  h:"看到不對，一分鐘回報", p:"點「聯絡負責人」，選模型、寫一句，送出前會再確認。", act:()=>load("/report") },
+  { s:"s-admin", sec:8,  h:"人看得到問題", p:"負責人在管理頁看到回報，改成處理中或已解決，並寫處理說明。" },
+  { s:"s-end",   sec:8,  h:"改一句話，一分鐘更新", p:"下一步：接真實紀錄前先遮資料、加登入，異常時才用 LINE 主動通知。" },
+];
+const $ = id => document.getElementById(id), app = $("app");
+let i = -1, playing = true, tts = false, timer = null, t0 = 0, dur = 0, speaking = false;
+
+function load(path){ return new Promise(r => { if (app.dataset.p === path) return r(); app.dataset.p = path; app.onload = () => setTimeout(r, 500); app.src = path; }); }
+async function focus(sel, top){
+  await load("/");
+  const d = app.contentDocument; if (!d) return;
+  d.querySelectorAll("[data-demo]").forEach(e => { e.style.outline = ""; e.style.boxShadow = ""; e.removeAttribute("data-demo"); });
+  // 卡片是非同步畫出來的，等一下再找
+  let el = null; for (let k = 0; k < 20 && !el; k++) { el = d.querySelector(sel); if (!el) await new Promise(r => setTimeout(r, 150)); }
+  if (!el) return;
+  el.setAttribute("data-demo", "1");
+  el.style.outline = "3px solid #fff"; el.style.boxShadow = "0 0 0 6px #d4372c, 0 0 30px #d4372c"; el.style.transition = "box-shadow .3s";
+  el.scrollIntoView({ behavior: "smooth", block: top ? "start" : "center" });
+}
+function hl(n){ const h = $("hl"); h.style.display = "block"; h.style.left = (n * 33.3) + "%"; }
+
+function speak(text){
+  if (!tts || !("speechSynthesis" in window)) return;
+  speechSynthesis.cancel(); speaking = true;
+  const u = new SpeechSynthesisUtterance(text); u.lang = "zh-TW"; u.rate = 1.05;
+  u.onend = u.onerror = () => { speaking = false; };
+  speechSynthesis.speak(u);
+}
+function go(n){
+  i = (n + SCENES.length) % SCENES.length; const sc = SCENES[i];
+  document.querySelectorAll(".screen").forEach(e => e.classList.toggle("on", e.id === sc.s));
+  if (sc.s !== "s-line") $("hl").style.display = "none";
+  $("step").textContent = `STEP ${i + 1} / ${SCENES.length}`; $("h").textContent = sc.h; $("p").textContent = sc.p;
+  [...$("dots").children].forEach((b, m) => b.classList.toggle("on", m === i));
+  if (sc.act) sc.act();
+  speak(sc.h + "。" + sc.p);
+  t0 = Date.now(); dur = sc.sec * 1000;
+}
+function tick(){
+  if (!playing) return;
+  const el = Date.now() - t0;
+  const total = SCENES.reduce((s, x) => s + x.sec, 0), before = SCENES.slice(0, i).reduce((s, x) => s + x.sec, 0);
+  $("prog").style.width = Math.min(100, (before * 1000 + Math.min(el, dur)) / (total * 1000) * 100) + "%";
+  if (el >= dur && !speaking) { if (i === SCENES.length - 1) { playing = false; $("play").textContent = "▶ 播放"; return; } go(i + 1); }
+}
+SCENES.forEach((_, n) => { const b = document.createElement("button"); b.setAttribute("aria-label", "第 " + (n + 1) + " 步"); b.onclick = () => go(n); $("dots").appendChild(b); });
+$("play").onclick = () => { playing = !playing; $("play").textContent = playing ? "⏸ 暫停" : "▶ 播放"; if (playing) { if (i === SCENES.length - 1 && Date.now() - t0 >= dur) go(0); t0 = Date.now() - 0; } else if (tts) speechSynthesis.cancel(); };
+$("tts").onclick = () => { tts = !tts; $("tts").textContent = "🔊 朗讀：" + (tts ? "開" : "關"); $("tts").classList.toggle("on", tts); if (tts) speak(SCENES[i].h + "。" + SCENES[i].p); else { speechSynthesis.cancel(); speaking = false; } };
+$("restart").onclick = () => { playing = true; $("play").textContent = "⏸ 暫停"; go(0); };
+load("/");                 // 先把工具載進來，第三幕切過去就不用等
+go(0); timer = setInterval(tick, 200);
+</script>
+</body>
+</html>
