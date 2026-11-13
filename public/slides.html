@@ -143,11 +143,7 @@ addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e
 let x0=null;document.getElementById('deck').addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
 document.getElementById('deck').addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(i+(dx<0?1:-1));x0=null;});
 // 下載：把這一頁原始檔存成 .html；離線打開時「打開工具」連到線上網址
-document.getElementById('dl').onclick=async()=>{
-  let html; try{html=await (await fetch(location.href.split('#')[0],{cache:'no-store'})).text();}catch(e){html='<!DOCTYPE html>'+document.documentElement.outerHTML;}
-  html=html.replace('href="/" id="open"','href="'+location.origin+'/" id="open"');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='模型健康日報_簡報.html';document.body.appendChild(a);a.click();a.remove();
-};
+document.getElementById('dl').onclick=()=>{location.href='/slides-download.htm';};
 document.getElementById('print').onclick=()=>print();
 const h=parseInt(location.hash.slice(1));go(isNaN(h)?0:h-1);
 if(location.protocol==='file:')document.getElementById('open').href='https://model-health-daily.tzungshiun72.workers.dev/';
@@ -155,7 +151,7 @@ if(location.protocol==='file:')document.getElementById('open').href='https://mod
 if(/\bLine\//i.test(navigator.userAgent)){
   const dl=document.getElementById('dl');
   dl.textContent='用瀏覽器開啟以下載';
-  dl.onclick=()=>{location.href=location.origin+'/slides?openExternalBrowser=1';};
+  dl.onclick=()=>{location.href=location.origin+'/slides-download.htm?openExternalBrowser=1';};
 }
 </script>
 </body>
