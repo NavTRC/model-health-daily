@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回報問題｜模型健康日報</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="top"><h1>回報問題</h1><nav><a class="btn" href="/">看日報</a></nav></div>
+<div class="wrap">
+  <p class="note">看到數字不對、畫面看不清楚、打不開，都可以回報。負責人每天會看，處理進度會更新。<br>請不要填客戶名稱、電話或任何個資。</p>
+  <form id="f">
+    <label>哪裡有問題</label>
+    <select name="target" id="target"><option>整體／不確定</option></select>
+    <label>問題類型</label>
+    <div class="chips">
+      <label><input type="radio" name="kind" value="數字不對" checked><span>數字不對</span></label>
+      <label><input type="radio" name="kind" value="狀態判斷不對"><span>狀態判斷不對</span></label>
+      <label><input type="radio" name="kind" value="看不清楚"><span>看不清楚</span></label>
+      <label><input type="radio" name="kind" value="打不開或很慢"><span>打不開或很慢</span></label>
+      <label><input type="radio" name="kind" value="其他"><span>其他</span></label>
+    </div>
+    <label>哪裡不對（必填）</label>
+    <textarea name="detail" maxlength="500" placeholder="例：缺件檢測今天顯示異常，但產線說今天有換料，應該是正常的"></textarea>
+    <label>你的稱呼（選填）</label>
+    <input name="who" maxlength="30" placeholder="例：A 線 王工程師">
+    <p><button class="btn primary" style="width:100%" type="submit">送出回報</button></p>
+  </form>
+  <div class="card" id="msg" hidden></div>
+</div>
+<footer>v1</footer>
+<script type="module">
+const data = await (await fetch("/data.json")).json();
+const sel = document.getElementById("target");
+Object.keys(data.models).forEach(n => sel.insertAdjacentHTML("beforeend", `<option>${n}</option>`));
+const p = new URLSearchParams(location.search).get("model"); if (p) sel.value = p;
+const f = document.getElementById("f"), msg = document.getElementById("msg");
+f.onsubmit = async e => {
+  e.preventDefault();
+  const fd = Object.fromEntries(new FormData(f));
+  if (!fd.detail.trim()) { alert("請寫一下哪裡不對"); return; }
+  if (!confirm("確定送出這筆回報？")) return;          // 送出前先讓人確認，避免手機誤按
+  const r = await fetch("/api/report", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(fd) });
+  const j = await r.json().catch(() => ({}));
+  msg.hidden = false;
+  msg.innerHTML = j.ok ? `✅ 已收到，回報編號 <b>${j.id}</b>。負責人會在管理頁看到並更新處理狀態。` : `⚠️ ${j.error || "送出失敗，請稍後再試"}`;
+  if (j.ok) f.reset();
+};
+</script>
+</body>
+</html>

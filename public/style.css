@@ -1,0 +1,28 @@
+:root{--bg:#0d0f12;--card:#161a20;--card2:#1c2129;--line:#2a2f37;--ink:#ece6da;--mute:#9097a0;
+  --red:#d4372c;--amber:#e0a34a;--yellow:#c9a227;--green:#3fb37f;--blue:#48bfe8}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--blue)}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line);position:relative}
+.top::before{content:"";position:absolute;left:0;top:0;height:3px;width:28%;background:var(--red)}
+.top h1{font-size:20px;margin:0;flex:1;min-width:180px}
+.top nav{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card2);color:var(--ink);font:inherit;text-decoration:none;cursor:pointer}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn:active{transform:scale(.98)}
+.meta{font:12px/1.6 ui-monospace,Consolas,monospace;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:700;color:#111}
+footer{padding:20px 16px 28px;text-align:center;font:12px ui-monospace,Consolas,monospace;color:var(--mute)}
+label{display:block;font-weight:700;margin:14px 0 6px}
+select,textarea,input{width:100%;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#0f1216;color:var(--ink);font:inherit}
+textarea{min-height:120px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{margin:0;font-weight:400}
+.chips input{display:none}
+.chips span{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card2);cursor:pointer}
+.chips input:checked+span{border-color:var(--red);background:#2a1715;color:#fff}
+.note{font-size:13px;color:var(--mute)}

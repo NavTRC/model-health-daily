@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模型健康日報</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  .hero{font-size:clamp(24px,6vw,34px);font-weight:800;line-height:1.3;margin:6px 0 2px}
+  .hero em{font-style:normal;color:var(--red)}
+  .ai{border-left:4px solid var(--blue)}
+  .ai b{font-size:13px;color:var(--blue)}
+  .m{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+  .m h3{margin:0;font-size:18px}
+  .rate{font:800 28px/1 ui-monospace,Consolas,monospace;text-align:right}
+  .sub{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--mute)}
+  .sub b{color:var(--ink)}
+  .neg{color:#ff8a80!important}
+  svg.spark{grid-column:1/-1;width:100%;height:44px}
+  .guess{grid-column:1/-1;font-size:14px;margin-top:4px}
+  .opts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .opts span{font-size:13px;border:1px dashed var(--line);border-radius:8px;padding:4px 8px}
+  details summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--mute)}
+  .bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="top"><h1>模型健康日報</h1><nav><a class="btn" href="/slides.html">簡報</a><a class="btn" href="/report.html">回報問題</a></nav></div>
+<div class="wrap">
+  <div class="meta" id="date">載入中…</div>
+  <div class="hero" id="hero"></div>
+  <div class="card ai"><b>AI 摘要（草稿，以下方數字為準）</b><div id="ai">產生中…</div></div>
+  <div id="need"></div>
+  <details id="okBox"><summary id="okSum"></summary><div id="ok"></div></details>
+  <div class="card note">只給選項，不替人決定：要不要重訓、回滾或停用，由負責工程師判斷。<br>門檻：辨識率 &lt; 95%、比昨天掉超過 3 點、連 3 天累計掉超過 2 點、筆數不到平常一半。</div>
+  <div class="bottom"><a class="btn" href="/slides.html">怎麼用（簡報）</a><a class="btn primary" href="/report.html">回報問題</a></div>
+</div>
+<footer>虛擬練習資料（嶺碩自動化，虛構）｜v1</footer>
+<script type="module">
+import { evaluate } from "/health.js";
+const fmt = (x, d = 1) => (x > 0 ? "+" : "") + x.toFixed(d);
+function spark(trend, color) {
+  const min = Math.min(...trend, 94), max = Math.max(...trend, 100), w = 300, h = 44;
+  const pts = trend.map((v, i) => `${(i / (trend.length - 1)) * (w - 8) + 4},${h - 4 - ((v - min) / (max - min)) * (h - 8)}`).join(" ");
+  const y95 = h - 4 - ((95 - min) / (max - min)) * (h - 8);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" x2="${w}" y1="${y95}" y2="${y95}" stroke="#d4372c" stroke-dasharray="4 4" opacity=".5"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5"/></svg>`;
+}
+function card(r) {
+  const c = r.statuses[0].color;
+  return `<div class="card m" style="border-left:4px solid ${c}">
+    <h3>${r.name}</h3><div class="rate" style="color:${c}">${r.rate}%</div>
+    <div class="sub">${r.statuses.map(s => `<span class="pill" style="background:${s.color}">${s.label}</span>`).join("")}
+      <span>${r.line}</span><span>比昨天 <b class="${r.vsYesterday < 0 ? "neg" : ""}">${fmt(r.vsYesterday)}</b></span>
+      <span>比 7 天平均 <b class="${r.vsAvg < 0 ? "neg" : ""}">${fmt(r.vsAvg)}</b></span>
+      <span>筆數 <b class="${r.nRatio < 0.5 ? "neg" : ""}">${r.n.toLocaleString()}</b>（平常的 ${Math.round(r.nRatio * 100)}%）</span></div>
+    ${spark(r.trend, c)}
+    ${r.advice.guess ? `<div class="guess">${r.advice.guess}</div><div class="opts">${r.advice.options.map(o => `<span>${o}</span>`).join("")}</div>` : ""}
+  </div>`;
+}
+const data = await (await fetch("/data.json")).json();
+const rows = evaluate(data), need = rows.filter(r => r.needsHuman), ok = rows.filter(r => !r.needsHuman);
+document.getElementById("date").textContent = `資料日 ${rows[0].date}｜共 ${rows.length} 支模型`;
+document.getElementById("hero").innerHTML = need.length ? `<em>${need.length} 支</em>要人看，${ok.length} 支正常` : "全部正常";
+document.getElementById("need").innerHTML = need.map(card).join("");
+document.getElementById("okSum").textContent = `正常的 ${ok.length} 支（點開看）`;
+document.getElementById("ok").innerHTML = ok.map(card).join("");
+fetch("/api/summary").then(r => r.json()).then(j => {
+  document.getElementById("ai").textContent = j.text + (j.source === "ai" ? "" : "（AI 暫時無法使用，這是規則產生的文字）");
+}).catch(() => { document.getElementById("ai").textContent = "AI 摘要暫時無法使用，請以下方數字為準。"; });
+</script>
+</body>
+</html>

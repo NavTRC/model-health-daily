@@ -1,0 +1,11 @@
+{
+  // name 要跟 GitHub repo 名稱、Cloudflare 上的名稱一樣
+  "name": "model-health-daily",
+  "main": "src/index.js",
+  "compatibility_date": "2025-10-01",
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  // Workers AI：不用金鑰
+  "ai": { "binding": "AI" }
+  // 回報功能的 KV：在 Cloudflare 建好之後，把下面這段加回來並填 ID
+  // ,"kv_namespaces": [{ "binding": "REPORTS", "id": "貼上 KV ID" }]
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>回報管理｜模型健康日報</title>
+<link rel="stylesheet" href="/style.css">
+<style>.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.row .btn{flex:1;min-width:90px}</style>
+</head>
+<body>
+<div class="top"><h1>回報管理（負責人）</h1><nav><a class="btn" href="/">看日報</a></nav></div>
+<div class="wrap">
+  <p class="note">這裡是「人看得到問題、做決定」的地方：每筆回報由負責人判斷，改成處理中、已解決或不處理。</p>
+  <label>管理密碼</label>
+  <div class="row"><input id="key" type="password" autocomplete="current-password"><button class="btn primary" id="go">查看</button></div>
+  <div id="list"></div>
+</div>
+<footer>v1</footer>
+<script>
+const key = document.getElementById("key"), list = document.getElementById("list");
+try { key.value = sessionStorage.getItem("k") || ""; } catch (e) {}
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+async function load() {
+  try { sessionStorage.setItem("k", key.value); } catch (e) {}
+  const r = await fetch("/api/reports", { headers: { "x-admin-key": key.value } });
+  const j = await r.json().catch(() => ({}));
+  if (!j.ok) { list.innerHTML = `<div class="card">⚠️ ${esc(j.error || "讀取失敗")}</div>`; return; }
+  if (!j.items.length) { list.innerHTML = `<div class="card">目前沒有回報。</div>`; return; }
+  list.innerHTML = `<p class="meta">共 ${j.items.length} 筆，新的在上面</p>` + j.items.map(it => `
+    <div class="card">
+      <div class="meta">${esc(it.id)}｜${esc(it.at.replace("T", " ").slice(0, 16))} UTC｜<b>${esc(it.status)}</b></div>
+      <h3 style="margin:6px 0">${esc(it.target)}｜${esc(it.kind)}</h3>
+      <div>${esc(it.detail)}</div>
+      <div class="note">回報人：${esc(it.who || "未填")}${it.note ? "｜處理說明：" + esc(it.note) : ""}</div>
+      <div class="row">${["處理中", "已解決", "不處理"].map(s => `<button class="btn" onclick="setS('${esc(it.id)}','${s}')">${s}</button>`).join("")}</div>
+    </div>`).join("");
+}
+async function setS(id, status) {
+  const note = prompt(`改成「${status}」，要補一句處理說明嗎？（可留空）`) ?? "";
+  const r = await fetch(`/api/reports/${id}`, { method: "POST", headers: { "x-admin-key": key.value, "content-type": "application/json" }, body: JSON.stringify({ status, note }) });
+  const j = await r.json().catch(() => ({})); if (!j.ok) alert(j.error || "更新失敗"); load();
+}
+document.getElementById("go").onclick = load;
+</script>
+</body>
+</html>

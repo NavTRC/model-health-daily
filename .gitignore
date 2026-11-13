@@ -1,0 +1,6 @@
+# 規矩與原始資料不推上公開 repo
+AGENTS.md
+*.csv
+.wrangler/
+node_modules/
+.dev.vars
