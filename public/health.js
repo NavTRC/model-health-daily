@@ -45,11 +45,11 @@ export function evaluate(data) {
   return out;
 }
 
-// 只給「推測」和「選項」，不替人做決定（重訓、退回舊版、停用一律由人決定）
+// 只給「推測」和「選項」，不替人做決定（重新訓練、退回舊版、停用一律由人決定）
 function advise(s) {
   const k = s.map(x => x.key);
   if (k.includes("data")) return { guess: "推測：資料沒有完整進來（管線、相機斷線或產線停機），辨識率沒有代表性。", options: ["先查資料管線", "確認產線是否停機"] };
   if (k.includes("bad")) return { guess: "推測：換料、相機位移或光源故障造成單日驟降。", options: ["到產線看相機與光源", "抽今天的誤判樣本", "確認後再決定退回舊版或暫停自動判定"] };
-  if (k.includes("drift")) return { guess: "推測：新批次外觀變化或光源老化，造成慢慢變差。", options: ["查新批次樣品與光源使用時數", "在跌破門檻前排重訓"] };
+  if (k.includes("drift")) return { guess: "推測：新批次外觀變化或光源老化，造成慢慢變差。", options: ["查新批次樣品與光源使用時數", "在跌破門檻前安排重新訓練"] };
   return { guess: "", options: [] };
 }
