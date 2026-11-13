@@ -50,7 +50,7 @@ async function summary(req, env, ctx, url) {
     const facts = need.map(r =>
       `${r.name}：今天辨識率 ${r.rate}%，比昨天 ${r.vsYesterday}，筆數為平常的 ${Math.round(r.nRatio * 100)}%，狀態 ${r.statuses.map(s => s.label).join("、")}`).join("\n");
     const messages = [
-      { role: "system", content: "你是產線模型維運的助理。只根據使用者給的事實，用繁體中文寫兩句話的摘要給工程師。不要編任何新數字，不要建議重訓、回滾或停用，那是人決定的。" },
+      { role: "system", content: "你是產線模型維運的助理。只根據使用者給的事實，用繁體中文寫兩句話的摘要給工程師。不要編任何新數字，不要建議重訓、退回舊版或停用，那是人決定的。" },
       { role: "user", content: `資料日 ${rows[0].date}，共 ${rows.length} 支模型，要人看的有：
 ${facts}` },
     ];
