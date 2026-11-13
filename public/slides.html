@@ -151,6 +151,12 @@ document.getElementById('dl').onclick=async()=>{
 document.getElementById('print').onclick=()=>print();
 const h=parseInt(location.hash.slice(1));go(isNaN(h)?0:h-1);
 if(location.protocol==='file:')document.getElementById('open').href='https://model-health-daily.tzungshiun72.workers.dev/';
+// LINE 內建瀏覽器擋下載：在 LINE 裡改成「用外部瀏覽器打開」（LINE 官方參數 openExternalBrowser=1）
+if(/\bLine\//i.test(navigator.userAgent)){
+  const dl=document.getElementById('dl');
+  dl.textContent='用瀏覽器開啟以下載';
+  dl.onclick=()=>{location.href=location.origin+'/slides?openExternalBrowser=1';};
+}
 </script>
 </body>
 </html>
