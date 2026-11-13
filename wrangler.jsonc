@@ -5,7 +5,8 @@
   "compatibility_date": "2025-10-01",
   "assets": { "directory": "./public", "binding": "ASSETS" },
   // Workers AI：不用金鑰
-  "ai": { "binding": "AI" }
-  // 回報功能的 KV：在 Cloudflare 建好之後，把下面這段加回來並填 ID
-  // ,"kv_namespaces": [{ "binding": "REPORTS", "id": "貼上 KV ID" }]
+  "ai": { "binding": "AI" },
+  // 回報問題存在這個 KV（Standard，課堂練習用；ID 不是機密）
+  "kv_namespaces": [{ "binding": "REPORTS", "id": "ef79c785841c4bbdb726fca0dd083a97" }]
+  // 管理頁密碼 ADMIN_KEY 是 Secret，在 Cloudflare 後台設定，不寫在這裡
 }
