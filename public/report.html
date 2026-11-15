@@ -25,27 +25,57 @@
     <textarea name="detail" maxlength="500" placeholder="例：缺件檢測今天顯示異常，但產線說今天有換料，應該是正常的"></textarea>
     <label>你的稱呼（選填）</label>
     <input name="who" maxlength="30" placeholder="例：A 線 王工程師">
-    <p><button class="btn primary" style="width:100%" type="submit">送出回報</button></p>
+    <p><button class="btn primary" style="width:100%" type="submit" id="go">下一步：確認內容</button></p>
   </form>
+  <div class="card" id="check" hidden>
+    <b>送出前確認</b>
+    <p class="note" id="maskInfo" style="margin:6px 0"></p>
+    <div class="note" style="margin-top:8px">實際會送出的內容：</div>
+    <div id="preview" style="white-space:pre-wrap;word-break:break-word;background:#0f1216;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:4px"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" type="button" id="back" style="flex:1">回去修改</button>
+      <button class="btn primary" type="button" id="send" style="flex:1">確定送出</button>
+    </div>
+  </div>
   <div class="card" id="msg" hidden></div>
 </div>
-<footer>v4</footer>
+<footer>v5</footer>
 <script type="module">
 const data = await (await fetch("/data.json")).json();
 const sel = document.getElementById("target");
 Object.keys(data.models).forEach(n => sel.insertAdjacentHTML("beforeend", `<option>${n}</option>`));
 const p = new URLSearchParams(location.search).get("model"); if (p) sel.value = p;
-const f = document.getElementById("f"), msg = document.getElementById("msg");
-f.onsubmit = async e => {
+import { maskPII, describe } from "/mask.js";
+const f = document.getElementById("f"), msg = document.getElementById("msg"), check = document.getElementById("check");
+let pending = null;
+// 第一道牆：在使用者自己的裝置上先遮個資（手機、Email、身分證、統編），遮好才送出；不跳出視窗，直接在頁面上確認
+f.onsubmit = e => {
   e.preventDefault();
   const fd = Object.fromEntries(new FormData(f));
-  if (!fd.detail.trim()) { alert("請寫一下哪裡不對"); return; }
-  if (!confirm("確定送出這筆回報？")) return;          // 送出前先讓人確認，避免手機誤按
-  const r = await fetch("/api/report", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(fd) });
-  const j = await r.json().catch(() => ({}));
-  msg.hidden = false;
-  msg.innerHTML = j.ok ? `✅ 已收到，回報編號 <b>${j.id}</b>。負責人會在管理頁看到並更新處理狀態。` : `⚠️ ${j.error || "送出失敗，請稍後再試"}`;
-  if (j.ok) f.reset();
+  msg.hidden = true;
+  if (!fd.detail.trim()) { msg.hidden = false; msg.textContent = "⚠️ 請寫一下哪裡不對"; return; }
+  const d = maskPII(fd.detail), w = maskPII(fd.who);
+  const counts = {}; for (const k of Object.keys(d.counts)) counts[k] = d.counts[k] + w.counts[k];
+  const total = d.total + w.total;
+  pending = { ...fd, detail: d.text, who: w.text, maskedOnDevice: total };   // 只送「遮了幾處」，不送原文
+  document.getElementById("maskInfo").textContent = total
+    ? `🔒 偵測到個資，送出時會遮掉：${describe(counts)}（共 ${total} 處）。遮掉的內容不會離開你的裝置。`
+    : "沒有偵測到手機、Email、身分證或統編。人名、地址、客戶名稱抓不到，請自己確認沒有填。";
+  document.getElementById("preview").textContent = `【${pending.target}｜${pending.kind}】\n${pending.detail}` + (pending.who ? `\n回報人：${pending.who}` : "");
+  f.hidden = true; check.hidden = false; check.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+document.getElementById("back").onclick = () => { check.hidden = true; f.hidden = false; pending = null; };
+document.getElementById("send").onclick = async () => {
+  if (!pending) return;
+  const btn = document.getElementById("send"); btn.disabled = true; btn.textContent = "送出中…";
+  try {
+    const r = await fetch("/api/report", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(pending) });
+    const j = await r.json().catch(() => ({}));
+    msg.hidden = false;
+    msg.innerHTML = j.ok ? `✅ 已收到，回報編號 <b>${j.id}</b>。負責人會在管理頁看到並更新處理狀態。` : `⚠️ ${j.error || "送出失敗，請稍後再試"}`;
+    if (j.ok) { f.reset(); check.hidden = true; f.hidden = false; pending = null; }
+  } catch (err) { msg.hidden = false; msg.textContent = "⚠️ 連線失敗，請再按一次「確定送出」"; }
+  finally { btn.disabled = false; btn.textContent = "確定送出"; }
 };
 </script>
 </body>

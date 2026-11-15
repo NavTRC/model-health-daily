@@ -70,6 +70,7 @@ function card(it) {
       <div class="quote">${esc(it.detail)}</div>
       <dl>
         <dt>回報人</dt><dd>${esc(it.who || "未填")}</dd>
+        ${(it.maskedOnDevice || it.maskedByServer) ? `<dt>個資</dt><dd>🔒 已遮 ${(it.maskedOnDevice || 0) + (it.maskedByServer || 0)} 處${it.maskedByServer ? `（其中 ${it.maskedByServer} 處由伺服器補遮）` : ""}</dd>` : ""}
         <dt>處理說明</dt><dd class="nt">${it.note ? esc(it.note) : "—"}</dd>
         ${it.updated ? `<dt>最後處理</dt><dd class="up">${esc(tw(it.updated))}</dd>` : ""}
       </dl>

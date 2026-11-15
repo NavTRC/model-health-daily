@@ -6,6 +6,7 @@
 // - /line/webhook：LINE 官方帳號聊天問答（規則回答，不用 AI；見 src/line.js）
 import { evaluate } from "../public/health.js";
 import { lineWebhook } from "./line.js";
+import { maskPII } from "../public/mask.js";
 
 // 依序嘗試；2026-07 起部分模型只給付費方案，所以準備備援（避開課程建議跳過的中國廠商模型）
 const MODELS = ["@cf/meta/llama-3.1-8b-instruct", "@cf/meta/llama-3.2-3b-instruct", "@cf/google/gemma-3-12b-it", "@cf/mistral/mistral-7b-instruct-v0.1"];
@@ -79,10 +80,16 @@ const clip = (s, n) => String(s ?? "").replace(/[<>]/g, "").trim().slice(0, n);
 async function createReport(req, env) {
   if (!env.REPORTS) return json({ ok: false, error: "回報功能尚未開通，請直接在 LINE 官方帳號留言給負責人" }, 503);
   let b; try { b = await req.json(); } catch { return json({ ok: false, error: "格式錯誤" }, 400); }
+  // 第一道牆的伺服器端：網頁已經在使用者裝置上遮過，這裡用同一份規則再檢查一次（防舊頁面或直接呼叫 API）
+  const d = maskPII(clip(b.detail, 500)), w = maskPII(clip(b.who, 30));
   const item = {
-    target: clip(b.target, 40), kind: clip(b.kind, 20), detail: clip(b.detail, 500), who: clip(b.who, 30),
+    target: clip(b.target, 40), kind: clip(b.kind, 20), detail: d.text, who: w.text,
     status: "新回報", at: new Date().toISOString(),
   };
+  // 只記數量：裝置上遮了幾處（網頁送來的數字）、伺服器又遮了幾處（大於 0 代表有資料沒經過網頁那一道）
+  const onDevice = Math.max(0, Math.min(50, parseInt(b.maskedOnDevice, 10) || 0));
+  if (onDevice) item.maskedOnDevice = onDevice;
+  if (d.total + w.total) item.maskedByServer = d.total + w.total;
   if (!item.detail) return json({ ok: false, error: "請寫一下哪裡不對" }, 400);
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   await env.REPORTS.put(`report:${id}`, JSON.stringify(item));
