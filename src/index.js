@@ -47,7 +47,8 @@ async function summary(req, env, ctx, url) {
   const cache = caches.default;
   const key = new Request(new URL(`/api/summary?d=${rows[0]?.date}&v=3`, url));
   const hit = await cache.match(key);
-  if (hit) return hit;
+  // 伺服器端快取 1 小時省 AI 額度；但回給瀏覽器一律 no-store，避免手機（LINE 內建瀏覽器）一直拿到舊摘要
+  if (hit) { const r = new Response(hit.body, hit); r.headers.set("cache-control", "no-store"); return r; }
 
   let text = fallback, source = "rule", model = null;
   const errors = [];
@@ -72,9 +73,10 @@ ${facts}` },
   const resp = json({ ok: true, text, source, model, at: new Date().toISOString(), errors: source === "ai" ? undefined : errors, date: rows[0]?.date });
   // 只有成功的 AI 結果才快取；規則文字不快取，下次再試 AI
   if (source !== "ai") return resp;
-  resp.headers.set("cache-control", "public, max-age=3600");
-  ctx.waitUntil(cache.put(key, resp.clone()));
-  return resp;
+  const stored = resp.clone();
+  stored.headers.set("cache-control", "public, max-age=3600");
+  ctx.waitUntil(cache.put(key, stored));
+  return resp;   // 這份仍是 no-store
 }
 
 const clip = (s, n) => String(s ?? "").replace(/[<>]/g, "").trim().slice(0, n);

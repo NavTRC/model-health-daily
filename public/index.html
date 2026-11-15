@@ -82,7 +82,7 @@ const MODEL_NAME = {
   "@cf/mistral/mistral-7b-instruct-v0.1": "Mistral 7B（Mistral AI）",
 };
 const twTime = iso => { try { return new Date(iso).toLocaleString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }); } catch (e) { return ""; } };
-fetch("/api/summary").then(r => r.json()).then(j => {
+fetch("/api/summary", { cache: "no-store" }).then(r => r.json()).then(j => {
   // Worker 已整理成「・」一行一支；這裡再保險拿掉開場白、合併多餘空行
   const t = String(j.text || "").replace(/^\s*以下是[^\n]*[：:]\s*/, "").replace(/\n{2,}/g, "\n").trim();
   document.getElementById("ai").textContent = t;
