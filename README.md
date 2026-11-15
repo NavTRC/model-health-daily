@@ -56,8 +56,7 @@
 ## 待辦
 
 - 圖文選單四格（2500×1686）的連結設定：A 打開工具＝`https://liff.line.me/2012586632-UOqlVsSZ`、B 看 Demo＝`…/2012586632-UOqlVsSZ/demo`、D 回報問題＝`…/2012586632-UOqlVsSZ/report`（三格都用 LIFF，在 LINE 裡滑出來）；C 簡報下載刻意用一般網址 `/slides?openExternalBrowser=1`，才會跳手機瀏覽器下載
-- `/demo` 的 LINE 聊天室示意用四格選單圖 `public/richmenu4.jpg`；`public/richmenu.jpg`（舊三格）已沒有頁面使用
-- `public/slides-download.htm` 是伺服器附件下載的備用檔，目前沒有頁面連到它
+- `/demo` 的 LINE 聊天室示意用四格選單圖 `public/richmenu4.jpg`
 - **改了 Demo 旁白（`public/demo.html` 的 SCENES）之後要重錄音檔**：`PYTHONPATH=.tts python tools/build-demo-audio.py`（台灣語音曉臻、語速 +10%，第一次先 `python -m pip install --target .tts edge-tts`），再把各幕 `sec` 設成音檔長度＋0.5 秒
 - **改了 `public/slides.html` 之後要重新產生 PDF**：執行 `bash tools/build-pdf.sh`（用本機 Edge／Chrome 輸出），再一起 commit、push；腳本會比對 PDF 頁數和投影片張數
 - 回報表單「送出前先在手機上遮個資」（⑭ 第一道牆）尚未做

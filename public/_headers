@@ -1,10 +1,6 @@
 /*
   Cache-Control: no-store
 
-/slides-download.htm
-  Content-Type: text/html; charset=utf-8
-  Content-Disposition: attachment; filename="model-health-daily-slides.html"; filename*=UTF-8''%E6%A8%A1%E5%9E%8B%E5%81%A5%E5%BA%B7%E6%97%A5%E5%A0%B1_%E7%B0%A1%E5%A0%B1.html
-
 /slides.pdf
   Content-Type: application/pdf
   Content-Disposition: attachment; filename="model-health-daily-slides.pdf"; filename*=UTF-8''%E6%A8%A1%E5%9E%8B%E5%81%A5%E5%BA%B7%E6%97%A5%E5%A0%B1_%E7%B0%A1%E5%A0%B1.pdf
