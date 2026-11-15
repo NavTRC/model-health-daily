@@ -15,7 +15,7 @@
 | `/slides.pdf` | 簡報 PDF（一張投影片一頁 16:9），由 `bash tools/build-pdf.sh` 產生 |
 | `/report` | 回報問題：送出前在使用者裝置上先遮手機、Email、身分證、統編（`public/mask.js`，Worker 用同一份再檢查一次），頁面內確認後才送出 |
 | `/admin` | 負責人看回報、改處理狀態（需管理密碼）：狀態色塊與統計、卡片內直接寫處理說明（不跳視窗）、標示「已遮 N 處」個資 |
-| `/api/summary` | AI 摘要，僅供參考（Workers AI），失敗時回規則文字 |
+| `/api/summary` | AI 摘要，僅供參考（Workers AI）：固定一支模型一行「・」，`src/summary-format.js` 整理開場白與沒寫完的句子；伺服器快取 1 小時、瀏覽器不快取；看板顯示產生的模型與時間；失敗時回規則文字 |
 | `/api/report`、`/api/reports` | 回報寫入 KV、管理頁讀取與改狀態 |
 | `/line/webhook` | LINE 官方帳號聊天問答（Messaging API）：用程式規則回答「今天／缺件／門檻／回報／簡報」，不送 AI；需要 Secret `LINE_CHANNEL_SECRET`、`LINE_CHANNEL_ACCESS_TOKEN` |
 
