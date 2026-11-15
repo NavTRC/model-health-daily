@@ -11,7 +11,8 @@
 |---|---|
 | `/` | 日報看板（手機優先），第一行是結論；要人看的排前面，正常的摺起來 |
 | `/demo` | 90 秒 Demo：自動播放、台灣中文旁白（點一下畫面開啟聲音） |
-| `/slides` | 簡報：怎麼用、怎麼回報問題；可翻頁、可下載、可列印 |
+| `/slides` | 簡報（分三章：使用者／主管／技術）；可翻頁，可下載 PDF 或離線 HTML 版 |
+| `/slides.pdf` | 簡報 PDF（一張投影片一頁 16:9），由 `bash tools/build-pdf.sh` 產生 |
 | `/report` | 回報問題（送出前會再確認一次） |
 | `/admin` | 負責人看回報、改處理狀態（需管理密碼） |
 | `/api/summary` | AI 摘要草稿（Workers AI），失敗時回規則文字 |
@@ -55,5 +56,6 @@
 
 - `/demo` 裡的 LINE 聊天室示意仍用舊的三格選單圖（`public/richmenu.jpg`），可換成四格版
 - `public/slides-download.htm` 是伺服器附件下載的備用檔，目前沒有頁面連到它
+- **改了 `public/slides.html` 之後要重新產生 PDF**：執行 `bash tools/build-pdf.sh`（用本機 Edge／Chrome 輸出），再一起 commit、push；腳本會比對 PDF 頁數和投影片張數
 - 回報表單「送出前先在手機上遮個資」（⑭ 第一道牆）尚未做
 - 回公司前：資料去識別化、改公司帳號、加登入（Entra ID／LINE Login）、repo 改私人
