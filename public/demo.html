@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Demo｜模型健康日報</title>
 <style>
-  :root{--bg:#0d0f12;--card:#161a20;--line:#2a2f37;--ink:#ece6da;--mute:#9097a0;--red:#d4372c;--amber:#e0a34a;--yellow:#c9a227;--green:#3fb37f;--blue:#48bfe8}
+  :root{--bg:#0d0f12;--card:#161a20;--card2:#1c2129;--line:#2a2f37;--ink:#ece6da;--mute:#9097a0;--red:#d4372c;--amber:#e0a34a;--yellow:#c9a227;--green:#3fb37f;--blue:#48bfe8}
   *{box-sizing:border-box} html,body{margin:0;height:100%}
   body{background:radial-gradient(ellipse at top,#1a1f27,var(--bg) 60%);color:var(--ink);font:16px/1.5 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden}
   .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
@@ -25,26 +25,44 @@
   .stat{display:flex;gap:10px;margin-top:18px}
   .stat div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
   .stat b{display:block;font-size:26px}
-  /* LINE 聊天室示意 */
+  .note{font-size:12px;color:var(--mute);margin-top:14px}
+  /* LINE 聊天室示意（四格圖文選單） */
   .chat{display:flex;flex-direction:column;background:#8cabd9}
   .chat .hd{background:#fff;color:#111;padding:12px;font-weight:700;text-align:center}
   .chat .body{flex:1;padding:12px;display:flex;flex-direction:column;gap:8px}
-  .bubble{background:#fff;color:#111;border-radius:14px;padding:10px 12px;max-width:85%;font-size:13px;line-height:1.5}
-  .menu{position:relative}
+  .bubble{background:#fff;color:#111;border-radius:14px;padding:10px 12px;max-width:88%;font-size:13px;line-height:1.55}
+  .menu .mw{position:relative}
   .menu img{display:block;width:100%}
-  .menu .hl{position:absolute;top:0;bottom:0;width:33.4%;border:4px solid #fff;box-shadow:0 0 0 4px var(--red),0 0 24px var(--red);border-radius:6px;animation:pulse 1.2s infinite;display:none}
+  .menu .hl{position:absolute;width:50%;height:50%;border:4px solid #fff;box-shadow:0 0 0 4px var(--red),0 0 24px var(--red);border-radius:8px;animation:pulse 1.2s infinite;display:none}
   @keyframes pulse{50%{box-shadow:0 0 0 4px var(--red),0 0 4px var(--red)}}
   .menu .tab{background:#fff;color:#333;text-align:center;font-size:12px;padding:6px}
-  /* 管理頁示意 */
-  .admin{background:var(--bg);padding:16px}
-  .admin h4{margin:4px 0 10px}
-  .rep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px}
-  .rep .row{display:flex;gap:6px;margin-top:10px}
-  .rep .row span{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:8px 0;font-size:13px}
-  .rep .row span.pick{border-color:var(--amber);color:var(--amber);animation:pulse2 1.2s infinite}
-  @keyframes pulse2{50%{background:#2a2215}}
-  .flow{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-  .flow span{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;font-weight:700;text-align:center}
+  /* 架構示意：哪裡用到 AI */
+  .arch{background:var(--bg);padding:18px 16px;display:flex;flex-direction:column;gap:7px;justify-content:center}
+  .arch h4{margin:0 0 6px;font-size:18px}
+  .nd{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:7px 10px;font-weight:700;font-size:14px}
+  .nd small{display:block;font-weight:400;font-size:11.5px;color:var(--mute);line-height:1.4}
+  .nd.rule{border-left-color:var(--green)} .nd.ai{border-left-color:var(--blue);background:#14222b;box-shadow:0 0 0 2px var(--blue)} .nd.human{border-left-color:var(--red)} .nd.data{border-left-color:var(--mute)} .nd.view{border-left-color:var(--amber)}
+  .ar{text-align:center;color:var(--mute);font-size:12px;line-height:1}
+  .grp{font-size:11px;color:var(--mute);letter-spacing:.1em;margin-top:4px}
+  /* 管理頁示意（和正式管理頁 v5 同樣排版） */
+  .admin{background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:8px}
+  .admin h4{margin:2px 0}
+  .sum{display:flex;gap:5px;flex-wrap:wrap}.sum span{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--card2);border:1px solid var(--line)}
+  .rep{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
+  .rep .rh{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  .rep .rh small{margin-left:auto;color:var(--mute)}
+  .pill{display:inline-block;padding:1px 9px;border-radius:999px;font-size:11px;font-weight:700;color:#111}
+  .rep .rb{padding:10px}
+  .quote{background:#0f1216;border-left:3px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:6px}
+  .rep .act{padding:10px;border-top:1px solid var(--line);background:var(--card2)}
+  .inp{background:#0f1216;border:1px solid var(--line);border-radius:8px;padding:7px 8px;margin-top:4px}
+  .rep .row{display:flex;gap:6px;margin-top:8px}
+  .rep .row span{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:7px 0;font-size:12px;background:var(--card)}
+  .rep .row span.cur{border-color:var(--ink);font-weight:700;animation:pulse2 1.2s infinite}
+  @keyframes pulse2{50%{box-shadow:0 0 0 3px var(--amber)}}
+  .ok{color:var(--green);font-size:12px;margin-top:6px}
+  .flow{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+  .flow span{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px;font-weight:700;text-align:center}
   .cap{width:min(420px,40vw)}
   .cap .step{font:13px ui-monospace,Consolas,monospace;color:var(--red);letter-spacing:.1em}
   .cap h2{margin:6px 0 10px;font-size:clamp(22px,2.6vw,32px);line-height:1.3}
@@ -52,7 +70,6 @@
   .dots{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
   .dots button{width:12px;height:12px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}
   .dots button.on{background:var(--red)}
-  .note{font-size:12px;color:var(--mute);margin-top:14px}
   @media (max-width:760px){
     .stage{flex-direction:column;gap:10px;padding:0}
     .phone{height:auto;width:100%;flex:1;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}
@@ -78,25 +95,42 @@
     <div class="screen chat" id="s-line">
       <div class="hd">模型健康日報</div>
       <div class="body">
-        <div class="bubble">歡迎使用「模型健康日報」！<br>📊 點下方「打開工具」看今天哪幾支模型要人看<br>🛠 看到不對，點「聯絡負責人」回報</div>
+        <div class="bubble">歡迎使用「模型健康日報」！<br>📊 打開工具：看今天哪幾支要人看<br>▶ 看 Demo：90 秒介紹<br>⬇ 簡報下載：用手機瀏覽器開啟<br>❗ 回報問題：看到不對，交給負責人</div>
       </div>
-      <div class="menu"><img src="/richmenu.jpg" alt="圖文選單：打開工具、使用說明、聯絡負責人"><div class="hl" id="hl"></div><div class="tab">選單 ▾</div></div>
+      <div class="menu"><div class="mw"><img src="/richmenu4.jpg" alt="圖文選單：打開工具、看 Demo、簡報下載、回報問題"><div class="hl" id="hl"></div></div><div class="tab">選單 ▾</div></div>
     </div>
     <div class="screen" id="s-app"><iframe id="app" title="模型健康日報"></iframe></div>
+    <div class="screen arch" id="s-arch">
+      <h4>哪裡用到 AI？只有一處</h4>
+      <div class="grp">每日日報</div>
+      <div class="nd data">模型運作紀錄<small>筆數、辨識率、漏檢、誤判</small></div>
+      <div class="ar">↓</div>
+      <div class="nd rule">程式規則：判斷哪支要人看<small>算今天／昨天／7 天平均 → 套三條門檻</small></div>
+      <div class="ar">↓</div>
+      <div class="nd ai">AI：只寫兩句摘要草稿<small>拿程式算好的數字；標「以數字為準」</small></div>
+      <div class="grp">回報</div>
+      <div class="nd view">回報表單 → 存起來<small>不送給 AI</small></div>
+      <div class="ar">↓</div>
+      <div class="nd human">人：看回報、做決定<small>重新訓練／退回舊版／停用</small></div>
+    </div>
     <div class="screen admin" id="s-admin">
       <h4>回報管理（負責人）</h4>
-      <div class="note" style="margin:0 0 10px">示意畫面：實際管理頁需要密碼</div>
+      <div class="sum"><span>新回報 0</span><span>處理中 1</span><span>已解決 3</span><span>不處理 1</span></div>
       <div class="rep">
-        <div class="note" style="margin:0">新回報｜A 線 王工程師</div>
-        <b>VI-2 缺件檢測｜狀態判斷不對</b>
-        <div>今天顯示異常，但產線說今天有換料，應該先確認樣本。</div>
-        <div class="row"><span class="pick">處理中</span><span>已解決</span><span>不處理</span></div>
+        <div class="rh"><span class="pill" style="background:var(--amber)">處理中</span><small>回報 11/15 11:20</small></div>
+        <div class="rb"><b>VI-2 缺件檢測｜數字不對</b>
+          <div class="quote">今天顯示異常，但產線說今天有換料，應該先確認樣本。</div>
+          <div class="note" style="margin-top:6px">回報人：A 線 王工程師</div></div>
+        <div class="act"><b style="font-size:12px">處理說明</b>
+          <div class="inp">已到產線確認，是換料造成的</div>
+          <div class="row"><span class="cur">處理中</span><span>已解決</span><span>不處理</span></div>
+          <div class="ok">✅ 已存成「處理中」，含處理說明</div></div>
       </div>
-      <div class="flow"><span>用的人回報</span><span>↓</span><span>負責人看到、判斷</span><span>↓</span><span>改狀態＋寫處理說明</span></div>
+      <div class="note" style="margin-top:2px">示意畫面：實際管理頁需要密碼</div>
     </div>
     <div class="screen card-screen" id="s-end">
       <div class="kick">HOW IT'S BUILT</div>
-      <div class="flow" style="margin-top:0"><span>AI 寫程式</span><span>GitHub 存</span><span>Cloudflare 自動上線</span><span>LINE 打開</span></div>
+      <div class="flow" style="margin-top:0"><span>AI agent 寫程式（開發時）</span><span>GitHub 存</span><span>Cloudflare 自動上線</span><span>LINE 打開</span></div>
       <div class="big" style="font-size:24px;margin-top:18px">只給我看<em>例外</em>，<br>出事才叫我。</div>
       <div class="note">加好友：@271qphqz｜虛擬練習資料</div>
     </div>
@@ -104,17 +138,20 @@
   <div class="cap"><div class="step" id="step"></div><h2 id="h"></h2><p id="p"></p><div class="dots" id="dots"></div></div>
 </div>
 <script>
-// 每一幕：要顯示哪個畫面、要做什麼動作、字幕；秒數是沒有朗讀時的長度
+// 每一幕：要顯示哪個畫面、要做什麼動作、字幕；秒數是沒有朗讀時的長度（合計約 90 秒）
+// 圖文選單四格：0 打開工具（左上）、1 看 Demo（右上）、2 簡報下載（左下）、3 回報問題（右下）
 const SCENES = [
   { s:"s-title", sec:8,  h:"痛點：模型上線後，沒人每天盯", p:"每天早上一小時，十支模型一支一支看；辨識率掉了，常常是客訴來了才發現。" },
-  { s:"s-line",  sec:7,  h:"在 LINE 裡打開", p:"加官方帳號好友，點下方「打開工具」，不用裝 App。", act:()=>hl(0) },
+  { s:"s-line",  sec:7,  h:"在 LINE 裡打開", p:"加官方帳號好友，點選單左上的「打開工具」，不用裝 App。", act:()=>hl(0) },
   { s:"s-app",   sec:8,  h:"第一行就是結論", p:"五支模型，三支要人看。要人看的排最上面，正常的摺起來。", act:()=>focus(".hero",true) },
-  { s:"s-app",   sec:8,  h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料、相機位移或光源故障。", act:()=>focus("#need .card:nth-child(1)") },
-  { s:"s-app",   sec:8,  h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉；只看門檻會漏掉。", act:()=>focus("#need .card:nth-child(2)") },
-  { s:"s-app",   sec:8,  h:"黃色：資料異常", p:"AM-300 資料只進來平常的 3%，要先查資料，不要先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
-  { s:"s-app",   sec:10, h:"AI 只寫草稿，人做決定", p:"AI 摘要曾把掉 12.4 點寫成「略低」。所以判斷靠規則，重新訓練、退回舊版、停用由人決定。", act:()=>focus(".ai",true) },
-  { s:"s-app",   sec:8,  h:"看到不對，一分鐘回報", p:"點「聯絡負責人」，選模型、寫一句，送出前會再確認。", act:()=>load("/report") },
-  { s:"s-admin", sec:8,  h:"人看得到問題", p:"負責人在管理頁看到回報，改成處理中或已解決，並寫處理說明。" },
+  { s:"s-app",   sec:7,  h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料、相機位移或光源故障。", act:()=>focus("#need .card:nth-child(1)") },
+  { s:"s-app",   sec:7,  h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉；只看門檻會漏掉。", act:()=>focus("#need .card:nth-child(2)") },
+  { s:"s-app",   sec:7,  h:"黃色：資料異常", p:"AM-300 資料只進來平常的 3%，要先查資料，不要先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
+  { s:"s-arch",  sec:10, h:"哪裡用到 AI？只有摘要", p:"判斷哪支要人看的是程式規則；AI 只把算好的數字寫成兩句摘要草稿。它曾把掉 12.4 點寫成「略低」，所以只當草稿。" },
+  { s:"s-line",  sec:5,  h:"看到不對，按「回報問題」", p:"選單右下那一格。", act:()=>hl(3) },
+  { s:"s-app",   sec:7,  h:"選模型、寫一句", p:"送出前會再確認一次。回報只會存起來，不會送給 AI。", act:()=>load("/report") },
+  { s:"s-admin", sec:9,  h:"人看得到、人做決定", p:"負責人在管理頁寫處理說明、改狀態。重新訓練、退回舊版、停用，一律由人決定。" },
+  { s:"s-line",  sec:6,  h:"三種人，三章簡報", p:"選單左下「簡報下載」：使用者、主管、技術三章，可以下載 PDF。", act:()=>hl(2) },
   { s:"s-end",   sec:8,  h:"改一句話，一分鐘更新", p:"下一步：接真實紀錄前先遮資料、加登入，異常時才用 LINE 主動通知。" },
 ];
 const $ = id => document.getElementById(id), app = $("app");
@@ -132,7 +169,7 @@ async function focus(sel, top){
   el.style.outline = "3px solid #fff"; el.style.boxShadow = "0 0 0 6px #d4372c, 0 0 30px #d4372c"; el.style.transition = "box-shadow .3s";
   el.scrollIntoView({ behavior: "smooth", block: top ? "start" : "center" });
 }
-function hl(n){ const h = $("hl"); h.style.display = "block"; h.style.left = (n * 33.3) + "%"; }
+function hl(n){ const h = $("hl"); h.style.display = "block"; h.style.left = (n % 2) * 50 + "%"; h.style.top = Math.floor(n / 2) * 50 + "%"; }
 
 // 優先挑台灣中文語音（iPhone 美佳、Windows Yating/HanHan/Zhiwei、Google 國語(臺灣)），避免念成大陸口音
 function twVoice(){
@@ -176,7 +213,7 @@ function unlock(){ if (unlocked) return; unlocked = true; const t = document.get
 addEventListener("pointerdown", unlock, { once: false });
 if (!("speechSynthesis" in window)) { const t = document.getElementById("tap"); if (t) t.remove(); tts = false; document.getElementById("tts").textContent = "🔇 此瀏覽器不支援朗讀"; }
 load("/");                 // 先把工具載進來，第三幕切過去就不用等
-go(0); timer = setInterval(tick, 200);
+const h0 = parseInt(location.hash.slice(1)); go(isNaN(h0) ? 0 : h0 - 1); timer = setInterval(tick, 200);
 </script>
 </body>
 </html>
