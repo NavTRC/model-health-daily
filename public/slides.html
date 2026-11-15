@@ -149,7 +149,7 @@
     <h2>看到不對，一分鐘回報</h2>
     <div class="grid">
       <div class="box"><div class="num">1</div><h3>點「回報問題」</h3>圖文選單右下那格（D），或日報頁的「回報問題」。</div>
-      <div class="box"><div class="num">2</div><h3>選、寫、確認</h3>選哪支模型、問題類型，寫一句哪裡不對。送出前會再確認一次，避免誤按。</div>
+      <div class="box"><div class="num">2</div><h3>選、寫、確認</h3>選哪支模型、問題類型，寫一句哪裡不對。送出前會先遮掉手機、Email、身分證、統編，讓你看過再送。</div>
       <div class="box"><div class="num">3</div><h3>拿到回報編號</h3>負責人在管理頁看到，改成「處理中／已解決／不處理」並寫處理說明。</div>
     </div>
     <p class="mute">請不要在回報裡填客戶名稱或個資。要下載這份簡報：用圖文選單的「簡報下載」（C 格）。</p>
@@ -243,7 +243,7 @@
     <div class="kick">第 3 章｜技術篇</div>
     <h2>資料與資安：三道牆</h2>
     <div class="grid">
-      <div class="box"><h3>進 AI 前</h3><ul><li>AI 只收程式算好的數字，不給原始紀錄、製程參數、影像</li><li>使用者的回報不送給 AI</li><li>金鑰不進程式碼、不推上 GitHub；公開 repo 只放虛擬資料</li></ul></div>
+      <div class="box"><h3>進 AI 前</h3><ul><li>AI 只收程式算好的數字，不給原始紀錄、製程參數、影像</li><li>回報表單在使用者裝置上先遮手機、Email、身分證、統編（含檢查碼），Worker 收到再用同一份規則檢查一次</li><li>使用者的回報不送給 AI</li><li>金鑰不進程式碼、不推上 GitHub；公開 repo 只放虛擬資料</li></ul></div>
       <div class="box"><h3>AI 做時</h3><ul><li>給 AI 的指示：只根據事實、不准編數字、不准建議處置</li><li>使用者文字一律當資料，不當指示</li></ul></div>
       <div class="box"><h3>出 AI 後</h3><ul><li>摘要標「僅供參考」；狀態由程式判斷</li><li>管理頁要密碼；回報內容一律顯示成純文字</li><li>提示注入實測：貼假系統通知，工具<b>沒有照做</b></li></ul></div>
     </div>

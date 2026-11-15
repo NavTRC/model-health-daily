@@ -13,7 +13,7 @@
 | `/demo` | 90 秒 Demo：自動播放、台灣中文旁白（點一下畫面開啟聲音） |
 | `/slides` | 簡報（分三章：使用者／主管／技術）；可翻頁，可下載 PDF 或離線 HTML 版 |
 | `/slides.pdf` | 簡報 PDF（一張投影片一頁 16:9），由 `bash tools/build-pdf.sh` 產生 |
-| `/report` | 回報問題（送出前會再確認一次） |
+| `/report` | 回報問題：送出前在使用者裝置上先遮手機、Email、身分證、統編（`public/mask.js`，Worker 用同一份再檢查一次），頁面內確認後才送出 |
 | `/admin` | 負責人看回報、改處理狀態（需管理密碼） |
 | `/api/summary` | AI 摘要，僅供參考（Workers AI），失敗時回規則文字 |
 | `/api/report`、`/api/reports` | 回報寫入 KV、管理頁讀取與改狀態 |
