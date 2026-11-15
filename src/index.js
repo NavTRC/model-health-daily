@@ -3,7 +3,9 @@
 // - /api/summary：Workers AI 寫一句白話摘要（僅供參考），失敗時退回固定文字
 // - /api/report：使用者回報問題，存進 KV（REPORTS）
 // - /api/reports：負責人看回報清單、改處理狀態（需要 ADMIN_KEY）
+// - /line/webhook：LINE 官方帳號聊天問答（規則回答，不用 AI；見 src/line.js）
 import { evaluate } from "../public/health.js";
+import { lineWebhook } from "./line.js";
 
 // 依序嘗試；2026-07 起部分模型只給付費方案，所以準備備援（避開課程建議跳過的中國廠商模型）
 const MODELS = ["@cf/meta/llama-3.1-8b-instruct", "@cf/meta/llama-3.2-3b-instruct", "@cf/google/gemma-3-12b-it", "@cf/mistral/mistral-7b-instruct-v0.1"];
@@ -18,6 +20,7 @@ export default {
       if (url.pathname === "/api/report" && req.method === "POST") return await createReport(req, env);
       if (url.pathname === "/api/reports") return await listReports(req, env, url);
       if (url.pathname.startsWith("/api/reports/") && req.method === "POST") return await setStatus(req, env, url);
+      if (url.pathname === "/line/webhook" && req.method === "POST") return await lineWebhook(req, env, ctx, loadData, url);
     } catch (e) {
       return json({ ok: false, error: "伺服器錯誤，請稍後再試或回報給負責人" }, 500);
     }

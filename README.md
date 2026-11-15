@@ -17,6 +17,7 @@
 | `/admin` | 負責人看回報、改處理狀態（需管理密碼） |
 | `/api/summary` | AI 摘要，僅供參考（Workers AI），失敗時回規則文字 |
 | `/api/report`、`/api/reports` | 回報寫入 KV、管理頁讀取與改狀態 |
+| `/line/webhook` | LINE 官方帳號聊天問答（Messaging API）：用程式規則回答「今天／缺件／門檻／回報／簡報」，不送 AI；需要 Secret `LINE_CHANNEL_SECRET`、`LINE_CHANNEL_ACCESS_TOKEN` |
 
 ## 狀態規則（`public/health.js`，前後端共用）
 
@@ -32,7 +33,7 @@
 
 - `wrangler.jsonc`：`name` 要和 repo、Cloudflare 上的名稱一致
 - 綁定：`AI`（Workers AI，不用金鑰）、`ASSETS`（public/）、`REPORTS`（KV）
-- 機密：`ADMIN_KEY`（管理頁密碼）在 Cloudflare 後台 Settings → Variables and Secrets 設定，**不寫進程式**
+- 機密：`ADMIN_KEY`（管理頁密碼）在 Cloudflare 後台 Settings → Variables and Secrets 設定，**不寫進程式**；LINE 問答的 `LINE_CHANNEL_SECRET`、`LINE_CHANNEL_ACCESS_TOKEN` 也一樣
 - 每次改版把頁尾版本號加 1，在 LINE 裡重新打開確認版本號有變
 
 ## AI 治理設計
