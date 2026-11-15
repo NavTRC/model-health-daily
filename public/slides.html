@@ -64,7 +64,26 @@
     .s{position:relative;inset:auto;opacity:1;pointer-events:auto;transition:none;width:1280px;height:720px;overflow:hidden;padding:48px 64px;break-after:page;page-break-after:always}
     .s:last-child{break-after:auto;page-break-after:auto}
     .s::after{content:attr(data-n);position:absolute;right:28px;bottom:18px;font:12px ui-monospace,Consolas,monospace;color:var(--mute)}
-    .jump{font-size:0}.jump::after{content:"見第 " attr(data-pg) " 頁";font-size:16px}
+    .jump{font-size:0}.jump::after{content:"見第 " attr(data-pg) " 頁";font-size:19px}
+    /* 撐滿頁面：整體放大、上下置中 */
+    body{font-size:21px}
+    .s{display:flex;flex-direction:column;justify-content:center;padding:44px 72px 52px}
+    .s h2{font-size:46px;margin-bottom:14px}
+    .kick{font-size:15px}
+    .big{font-size:68px}
+    .grid{gap:20px;margin-top:20px}
+    .box{padding:20px 22px}
+    .box h3{font-size:25px}
+    .num{width:42px;height:42px;font-size:20px}
+    .pill{font-size:18px;padding:3px 14px}
+    .flow{gap:12px;margin-top:22px}.flow span{padding:14px 18px;font-size:21px}
+    li{margin:8px 0}
+    .who{font-size:18px}
+    .arch{gap:14px;margin-top:18px}
+    .nd{font-size:20px;padding:10px 14px}.nd small{font-size:15px}
+    .lane .ln{width:88px;font-size:17px}
+    .legend{font-size:16px;margin-top:16px}
+    .mute{font-size:19px}
   }
 </style>
 </head>
@@ -260,7 +279,15 @@ document.getElementById('deck').addEventListener('touchend',e=>{if(x0===null)ret
 document.getElementById('dl').onclick=async()=>{
   let html; try{html=await (await fetch(location.href.split('#')[0],{cache:'no-store'})).text();}catch(e){html='<!DOCTYPE html>'+document.documentElement.outerHTML;}
   html=html.replace('href="/" id="open"','href="'+location.origin+'/" id="open"').replace('id="pdf" href="/slides.pdf"','id="pdf" href="'+location.origin+'/slides.pdf"');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='模型健康日報_簡報.html';document.body.appendChild(a);a.click();a.remove();
+  save(new Blob([html],{type:'text/html'}),'模型健康日報_簡報_'+stamp()+'.html');
+};
+// 下載檔名加時間戳記（台灣時間，24 小時制）：模型健康日報_簡報_yyyyMMddHHmmss
+function stamp(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return p.year+p.month+p.day+p.hour+p.minute+p.second;}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),10000);}
+document.getElementById('pdf').onclick=async e=>{
+  e.preventDefault(); const href=e.currentTarget.href;
+  try{const r=await fetch(href,{cache:'no-store'});if(!r.ok)throw 0;save(await r.blob(),'模型健康日報_簡報_'+stamp()+'.pdf');}
+  catch(err){location.href=href;}
 };
 // PDF 用：每頁右下角頁碼、目錄卡片改寫成「見第 N 頁」
 S.forEach((s,n)=>s.dataset.n=(n+1)+' / '+S.length);
