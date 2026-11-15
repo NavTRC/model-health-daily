@@ -6,57 +6,105 @@
 <meta name="robots" content="noindex">
 <title>回報管理｜模型健康日報</title>
 <link rel="stylesheet" href="/style.css">
-<style>.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.row .btn{flex:1;min-width:90px}</style>
+<style>
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.row .btn{flex:1;min-width:90px}
+  .sum{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
+  .sum span{padding:4px 12px;border-radius:999px;background:var(--card2);border:1px solid var(--line);font-size:14px}
+  .rep{padding:0;overflow:hidden}
+  .rep.done{opacity:.72}
+  .rh{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .rh .when{margin-left:auto;font-size:13px;color:var(--mute)}
+  .rb{padding:14px}
+  .rb h3{margin:0 0 10px;font-size:18px}
+  .quote{background:#0f1216;border-left:3px solid var(--line);border-radius:8px;padding:10px 12px;white-space:pre-wrap;word-break:break-word}
+  dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:12px 0 0;font-size:14px}
+  dt{color:var(--mute)} dd{margin:0;word-break:break-word}
+  .act{padding:14px;border-top:1px solid var(--line);background:var(--card2)}
+  .act label{margin:0 0 6px;font-size:14px}
+  .act .btn{background:var(--card)}
+  .act .btn.cur{border-color:var(--ink);font-weight:700}
+  .msg{margin-top:8px;font-size:14px}
+  .id{padding:0 14px 10px;font:11px ui-monospace,Consolas,monospace;color:var(--mute)}
+  .rep.done .act{background:var(--card)}
+</style>
 </head>
 <body>
 <div class="top"><h1>回報管理（負責人）</h1><nav><a class="btn" href="/">看日報</a></nav></div>
 <div class="wrap">
   <p class="note">這裡是「人看得到問題、做決定」的地方：每筆回報由負責人判斷，改成處理中、已解決或不處理。</p>
-  <label>管理密碼</label>
-  <div class="row"><input id="key" type="password" autocomplete="current-password"><button class="btn primary" id="go">查看</button></div>
+  <label for="key">管理密碼</label>
+  <div class="row" style="margin-top:0"><input id="key" type="password" autocomplete="current-password"><button class="btn primary" id="go">查看</button></div>
   <div id="list"></div>
 </div>
-<footer>v4</footer>
+<footer>v5</footer>
 <script>
 const key = document.getElementById("key"), list = document.getElementById("list");
 try { key.value = sessionStorage.getItem("k") || ""; } catch (e) {}
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const STATUS = ["新回報", "處理中", "已解決", "不處理"];
+const COLOR = { "新回報": "var(--red)", "處理中": "var(--amber)", "已解決": "var(--green)", "不處理": "var(--mute)" };
+const pill = s => `<span class="pill" style="background:${COLOR[s] || "var(--mute)"}">${esc(s)}</span>`;
+const tw = iso => { try { return new Date(iso).toLocaleString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }); } catch (e) { return iso; } };
+const isDone = s => s === "已解決" || s === "不處理";
+
 async function load() {
   try { sessionStorage.setItem("k", key.value); } catch (e) {}
   const r = await fetch("/api/reports", { headers: { "x-admin-key": key.value } });
   const j = await r.json().catch(() => ({}));
   if (!j.ok) { list.innerHTML = `<div class="card">⚠️ ${esc(j.error || "讀取失敗")}</div>`; return; }
   if (!j.items.length) { list.innerHTML = `<div class="card">目前沒有回報。</div>`; return; }
-  list.innerHTML = `<p class="meta">共 ${j.items.length} 筆，新的在上面</p>` + j.items.map(it => `
-    <div class="card" data-id="${esc(it.id)}">
-      <div class="meta">${esc(it.id)}｜${esc(it.at.replace("T", " ").slice(0, 16))} UTC｜<b class="st">${esc(it.status)}</b></div>
-      <h3 style="margin:6px 0">${esc(it.target)}｜${esc(it.kind)}</h3>
-      <div>${esc(it.detail)}</div>
-      <div class="note">回報人：${esc(it.who || "未填")}<span class="nt">${it.note ? "｜處理說明：" + esc(it.note) : ""}</span></div>
-      <label style="margin-top:8px">處理說明（選填，先寫再按下面的狀態）</label>
-      <input class="ni" maxlength="200" value="${esc(it.note || "")}" placeholder="例：已到產線確認，是換料造成的">
-      <div class="row">${["處理中", "已解決", "不處理"].map(s => `<button class="btn" data-s="${s}">${s}</button>`).join("")}</div>
-      <div class="meta msg"></div>
-    </div>`).join("");
+  list.innerHTML = `<div class="sum"></div>` +
+    `<p class="note">共 ${j.items.length} 筆，新的在上面；時間為台灣時間。</p>` + j.items.map(card).join("");
+  updSum();
 }
+function updSum() {
+  const all = [...list.querySelectorAll(".rep")].map(c => c.dataset.st);
+  const el = list.querySelector(".sum"); if (el) el.innerHTML = STATUS.map(s => `<span>${esc(s)} ${all.filter(x => x === s).length}</span>`).join("");
+}
+
+function card(it) {
+  return `<div class="card rep${isDone(it.status) ? " done" : ""}" data-id="${esc(it.id)}" data-st="${esc(it.status)}">
+    <div class="rh"><span class="st">${pill(it.status)}</span><span class="when">回報 ${esc(tw(it.at))}</span></div>
+    <div class="rb">
+      <h3>${esc(it.target)}｜${esc(it.kind)}</h3>
+      <div class="quote">${esc(it.detail)}</div>
+      <dl>
+        <dt>回報人</dt><dd>${esc(it.who || "未填")}</dd>
+        <dt>處理說明</dt><dd class="nt">${it.note ? esc(it.note) : "—"}</dd>
+        ${it.updated ? `<dt>最後處理</dt><dd class="up">${esc(tw(it.updated))}</dd>` : ""}
+      </dl>
+    </div>
+    <div class="act">
+      <label>處理說明（選填，先寫再按狀態）</label>
+      <input class="ni" maxlength="200" value="${esc(it.note || "")}" placeholder="例：已到產線確認，是換料造成的">
+      <div class="row">${STATUS.slice(1).map(s => `<button class="btn${s === it.status ? " cur" : ""}" data-s="${s}">${s}</button>`).join("")}</div>
+      <div class="msg"></div>
+    </div>
+    <div class="id">${esc(it.id)}</div>
+  </div>`;
+}
+
 // 不用跳出視窗：處理說明寫在卡片裡，按狀態時一起送出；存好後畫面立刻改（伺服器資料約一分鐘內同步到各地）
 list.addEventListener("click", async e => {
   const b = e.target.closest("button[data-s]"); if (!b) return;
-  const card = b.closest(".card"), id = card.dataset.id, status = b.dataset.s;
-  const note = card.querySelector(".ni").value.trim(), msg = card.querySelector(".msg");
-  const btns = card.querySelectorAll("button[data-s]");
+  const c = b.closest(".rep"), id = c.dataset.id, status = b.dataset.s;
+  const note = c.querySelector(".ni").value.trim(), msg = c.querySelector(".msg");
+  const btns = c.querySelectorAll("button[data-s]");
   btns.forEach(x => x.disabled = true); msg.textContent = "儲存中…";
   try {
     const r = await fetch(`/api/reports/${encodeURIComponent(id)}`, { method: "POST", headers: { "x-admin-key": key.value, "content-type": "application/json" }, body: JSON.stringify({ status, note }) });
     const j = await r.json().catch(() => ({}));
     if (!j.ok) { msg.textContent = "⚠️ " + (j.error || "更新失敗") + "，再按一次"; return; }
-    card.querySelector(".st").textContent = status;
-    card.querySelector(".nt").textContent = note ? "｜處理說明：" + note : "";
+    c.querySelector(".st").innerHTML = pill(status);
+    c.querySelector(".nt").textContent = note || "—";
+    btns.forEach(x => x.classList.toggle("cur", x.dataset.s === status));
+    c.classList.toggle("done", isDone(status)); c.dataset.st = status; updSum();
     msg.textContent = `✅ 已存成「${status}」${note ? "，含處理說明" : "（沒有填處理說明）"}。重新整理若還看到舊狀態，約一分鐘後就會同步。`;
   } catch (err) { msg.textContent = "⚠️ 連線失敗，再按一次"; }
   finally { btns.forEach(x => x.disabled = false); }
 });
 document.getElementById("go").onclick = load;
+key.addEventListener("keydown", e => { if (e.key === "Enter") load(); });
 </script>
 </body>
 </html>
