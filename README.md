@@ -56,6 +56,7 @@
 
 - `/demo` 裡的 LINE 聊天室示意仍用舊的三格選單圖（`public/richmenu.jpg`），可換成四格版
 - `public/slides-download.htm` 是伺服器附件下載的備用檔，目前沒有頁面連到它
+- **改了 Demo 旁白（`public/demo.html` 的 SCENES）之後要重錄音檔**：`PYTHONPATH=.tts python tools/build-demo-audio.py`（台灣語音曉臻、語速 +10%，第一次先 `python -m pip install --target .tts edge-tts`），再把各幕 `sec` 設成音檔長度＋0.5 秒
 - **改了 `public/slides.html` 之後要重新產生 PDF**：執行 `bash tools/build-pdf.sh`（用本機 Edge／Chrome 輸出），再一起 commit、push；腳本會比對 PDF 頁數和投影片張數
 - 回報表單「送出前先在手機上遮個資」（⑭ 第一道牆）尚未做
 - 回公司前：資料去識別化、改公司帳號、加登入（Entra ID／LINE Login）、repo 改私人
