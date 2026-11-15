@@ -138,21 +138,21 @@
   <div class="cap"><div class="step" id="step"></div><h2 id="h"></h2><p id="p"></p><div class="dots" id="dots"></div></div>
 </div>
 <script>
-// 每一幕：要顯示哪個畫面、要做什麼動作、字幕；秒數是沒有朗讀時的長度（合計約 90 秒）
+// 每一幕：要顯示哪個畫面、要做什麼動作、字幕；sec＝該幕旁白音檔長度＋0.5 秒（合計約 90 秒；改旁白後重跑 tools/build-demo-audio.py 並更新 sec）
 // 圖文選單四格：0 打開工具（左上）、1 看 Demo（右上）、2 簡報下載（左下）、3 回報問題（右下）
 const SCENES = [
-  { s:"s-title", sec:8,  h:"痛點：模型上線後，沒人每天盯", p:"每天早上一小時，十支模型一支一支看；辨識率掉了，常常是客訴來了才發現。" },
-  { s:"s-line",  sec:7,  h:"在 LINE 裡打開", p:"加官方帳號好友，點選單左上的「打開工具」，不用裝 App。", act:()=>hl(0) },
-  { s:"s-app",   sec:8,  h:"第一行就是結論", p:"五支模型，三支要人看。要人看的排最上面，正常的摺起來。", act:()=>focus(".hero",true) },
-  { s:"s-app",   sec:7,  h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料、相機位移或光源故障。", act:()=>focus("#need .card:nth-child(1)") },
-  { s:"s-app",   sec:7,  h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉；只看門檻會漏掉。", act:()=>focus("#need .card:nth-child(2)") },
-  { s:"s-app",   sec:7,  h:"黃色：資料異常", p:"AM-300 資料只進來平常的 3%，要先查資料，不要先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
-  { s:"s-arch",  sec:10, h:"哪裡用到 AI？只有摘要", p:"判斷哪支要人看的是程式規則；AI 只把算好的數字寫成兩句摘要草稿。它曾把掉 12.4 點寫成「略低」，所以只當草稿。" },
-  { s:"s-line",  sec:5,  h:"看到不對，按「回報問題」", p:"選單右下那一格。", act:()=>hl(3) },
-  { s:"s-app",   sec:7,  h:"選模型、寫一句", p:"送出前會再確認一次。回報只會存起來，不會送給 AI。", act:()=>load("/report") },
-  { s:"s-admin", sec:9,  h:"人看得到、人做決定", p:"負責人在管理頁寫處理說明、改狀態。重新訓練、退回舊版、停用，一律由人決定。" },
-  { s:"s-line",  sec:6,  h:"三種人，三章簡報", p:"選單左下「簡報下載」：使用者、主管、技術三章，可以下載 PDF。", act:()=>hl(2) },
-  { s:"s-end",   sec:8,  h:"改一句話，一分鐘更新", p:"下一步：接真實紀錄前先遮資料、加登入，異常時才用 LINE 主動通知。" },
+  { s:"s-title", sec:8.7, h:"痛點：模型沒人每天盯", p:"每天一小時逐支看；辨識率掉了，常是客訴來了才發現。" },
+  { s:"s-line",  sec:6.1, h:"在 LINE 裡打開", p:"加好友，點選單左上「打開工具」。", act:()=>hl(0) },
+  { s:"s-app",   sec:6.7, h:"第一行就是結論", p:"五支模型，三支要人看，排在最上面。", act:()=>focus(".hero",true) },
+  { s:"s-app",   sec:7.5, h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料或光源。", act:()=>focus("#need .card:nth-child(1)") },
+  { s:"s-app",   sec:7.6, h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉。", act:()=>focus("#need .card:nth-child(2)") },
+  { s:"s-app",   sec:7.6, h:"黃色：資料異常", p:"資料只進來 3%，先查資料，別先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
+  { s:"s-arch",  sec:9.1, h:"AI 只寫摘要草稿", p:"判斷靠程式規則；AI 曾把掉 12.4 點寫成「略低」，所以只當草稿。" },
+  { s:"s-line",  sec:5.8, h:"看到不對，按「回報問題」", p:"選單右下那一格。", act:()=>hl(3) },
+  { s:"s-app",   sec:6.4, h:"選模型、寫一句", p:"回報只會存起來，不會送給 AI。", act:()=>load("/report") },
+  { s:"s-admin", sec:9.2, h:"人做決定", p:"負責人寫處理說明、改狀態；重新訓練、退回舊版、停用，都由人決定。" },
+  { s:"s-line",  sec:7.1, h:"三種人，三章簡報", p:"選單左下「簡報下載」，可以下載 PDF。", act:()=>hl(2) },
+  { s:"s-end",   sec:8.1, h:"改一句話，一分鐘更新", p:"下一步：先遮資料、加登入，異常才主動通知。" },
 ];
 const $ = id => document.getElementById(id), app = $("app");
 let i = -1, playing = true, tts = true, unlocked = false, timer = null, t0 = 0, dur = 0, speaking = false;
