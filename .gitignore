@@ -4,3 +4,4 @@ AGENTS.md
 .wrangler/
 node_modules/
 .dev.vars
+.tts/
