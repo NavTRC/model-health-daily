@@ -16,6 +16,7 @@
   .hero em{font-style:normal;color:var(--red)}
   .ai{border-left:4px solid var(--blue)}
   .ai b{font-size:13px;color:var(--blue)}
+  #ai{white-space:pre-line;margin-top:4px}
   .m{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
   .m h3{margin:0;font-size:18px}
   .rate{font:800 28px/1 ui-monospace,Consolas,monospace;text-align:right}
@@ -35,7 +36,7 @@
 <div class="wrap">
   <div class="meta" id="date">載入中…</div>
   <div class="hero" id="hero"></div>
-  <div class="card ai"><b>AI 摘要（草稿，以下方數字為準）</b><div id="ai">產生中…</div></div>
+  <div class="card ai"><b>AI 摘要（僅供參考，以下方數字為準）</b><div id="ai">產生中…</div></div>
   <div id="need"></div>
   <details id="okBox"><summary id="okSum"></summary><div id="ok"></div></details>
   <div class="card note">只給選項，不替人決定：要不要重新訓練、退回舊版或停用，由負責工程師判斷。<br>門檻：辨識率 &lt; 95%、比昨天掉超過 3 點、連 3 天累計掉超過 2 點、筆數不到平常一半。</div>
@@ -73,7 +74,9 @@ document.getElementById("need").innerHTML = need.map(card).join("");
 document.getElementById("okSum").textContent = `正常的 ${ok.length} 支（點開看）`;
 document.getElementById("ok").innerHTML = ok.map(card).join("");
 fetch("/api/summary").then(r => r.json()).then(j => {
-  document.getElementById("ai").textContent = j.text + (j.source === "ai" ? "" : "（AI 暫時無法使用，這是規則產生的文字）");
+  // 保留 AI 的換行（1. 2. 各一行），拿掉「以下是……摘要：」這類開場白
+  const t = String(j.text || "").replace(/^\s*以下是[^\n]*[：:]\s*/, "").replace(/\n{2,}/g, "\n").trim();
+  document.getElementById("ai").textContent = t + (j.source === "ai" ? "" : "（AI 暫時無法使用，這是規則產生的文字）");
 }).catch(() => { document.getElementById("ai").textContent = "AI 摘要暫時無法使用，請以下方數字為準。"; });
 </script>
 </body>

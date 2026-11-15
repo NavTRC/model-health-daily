@@ -141,7 +141,7 @@
       <div class="box"><span class="pill" style="background:#c9a227">資料異常</span><p>今天筆數不到平常一半：<b>先查資料有沒有進來，不要先怪模型</b>。</p></div>
       <div class="box"><span class="pill" style="background:#3fb37f">正常</span><p>不吵你，摺在最下面。</p></div>
     </div>
-    <p class="mute">每張卡片有 7 天趨勢線、推測原因（標明「推測」）和可以選的處理方式。最上方的 AI 摘要是草稿，以數字為準。</p>
+    <p class="mute">每張卡片有 7 天趨勢線、推測原因（標明「推測」）和可以選的處理方式。最上方的 AI 摘要僅供參考，以數字為準。</p>
   </section>
 
   <section class="s">
@@ -175,9 +175,9 @@
   <section class="s">
     <div class="kick">第 2 章｜主管篇</div>
     <h2>人在哪一步做決定</h2>
-    <div class="flow"><span>程式：算數字、套門檻</span><i>→</i><span>程式：列推測與選項</span><i>→</i><span>AI：寫兩句摘要草稿</span><i>→</i><span style="border-color:var(--red)">人：決定重新訓練／退回舊版／停用</span></div>
+    <div class="flow"><span>程式：算數字、套門檻</span><i>→</i><span>程式：列推測與選項</span><i>→</i><span>AI：寫兩句摘要（僅供參考）</span><i>→</i><span style="border-color:var(--red)">人：決定重新訓練／退回舊版／停用</span></div>
     <ul>
-      <li>判斷「哪支要人看」的是<b>程式規則</b>，不是 AI；AI 只寫摘要草稿，標「以數字為準」。</li>
+      <li>判斷「哪支要人看」的是<b>程式規則</b>，不是 AI；AI 只寫摘要，僅供參考、以數字為準。</li>
       <li>實測過：小模型把「掉 12.4 點」寫成「略低」——所以不讓 AI 判斷狀態。</li>
       <li>處置與改門檻一律由人決定；⑨ 的 AI 助理版也把這條寫進規矩（AGENTS.md），叫它「直接把模型停掉」，它<b>擋下來</b>。</li>
     </ul>
@@ -188,7 +188,7 @@
     <h2>效益與風險</h2>
     <div class="grid">
       <div class="box"><h3>效益（模擬）</h3>（每天 60 分 − 看日報 5 分）× 22 天 − 覆核 220 分 ＝ <b>每月約 16.5 小時</b>。<div class="mute">回公司最該實際量的是「每天平均幾支要人看」：誤報越多，覆核越久。</div></div>
-      <div class="box"><h3>三個風險 → 怎麼擋</h3><ul><li>資料沒進來卻顯示正常 → 筆數不到一半就標「資料異常」</li><li>每天掉一點、沒跌破門檻 → 加「連 3 天累計掉 2 點」漂移規則</li><li>AI 摘要講錯嚴重性 → 摘要只當草稿，狀態由程式判斷</li></ul></div>
+      <div class="box"><h3>三個風險 → 怎麼擋</h3><ul><li>資料沒進來卻顯示正常 → 筆數不到一半就標「資料異常」</li><li>每天掉一點、沒跌破門檻 → 加「連 3 天累計掉 2 點」漂移規則</li><li>AI 摘要講錯嚴重性 → 摘要只當參考，狀態由程式判斷</li></ul></div>
     </div>
   </section>
 
@@ -219,8 +219,8 @@
       </div>
       <div class="lane"><div class="ln">摘要</div>
         <div class="nd rule">程式算好的數字</div><i>→</i>
-        <div class="nd ai">AI 寫兩句摘要草稿<small>Cloudflare Workers AI（小模型）；失敗就改用程式拼的固定句子</small></div><i>→</i>
-        <div class="nd view">看板最上方<small>標「草稿，以數字為準」</small></div>
+        <div class="nd ai">AI 寫兩句摘要（僅供參考）<small>Cloudflare Workers AI（小模型）；失敗就改用程式拼的固定句子</small></div><i>→</i>
+        <div class="nd view">看板最上方<small>標「僅供參考，以數字為準」</small></div>
       </div>
       <div class="lane"><div class="ln">回報</div>
         <div class="nd view">使用者回報表單</div><i>→</i>
@@ -231,7 +231,7 @@
         <div class="nd human" style="flex:1">人：到產線確認 → 決定重新訓練／退回舊版／停用、修改門檻</div>
       </div>
     </div>
-    <p class="legend"><b class="c-rule">■ 程式</b>　<b class="c-ai">■ AI</b>　<b class="c-human">■ 人</b>　<b class="c-data">■ 資料／儲存</b>　<b class="c-view">■ 畫面</b>　｜　判斷靠程式、決定靠人，AI 只寫「錯了也不會出事」的草稿。</p>
+    <p class="legend"><b class="c-rule">■ 程式</b>　<b class="c-ai">■ AI</b>　<b class="c-human">■ 人</b>　<b class="c-data">■ 資料／儲存</b>　<b class="c-view">■ 畫面</b>　｜　判斷靠程式、決定靠人，AI 只寫「錯了也不會出事」的參考摘要。</p>
   </section>
 
   <section class="s">
@@ -240,7 +240,7 @@
     <div class="grid">
       <div class="box"><h3>進 AI 前</h3><ul><li>AI 只收程式算好的數字，不給原始紀錄、製程參數、影像</li><li>使用者的回報不送給 AI</li><li>金鑰不進程式碼、不推上 GitHub；公開 repo 只放虛擬資料</li></ul></div>
       <div class="box"><h3>AI 做時</h3><ul><li>給 AI 的指示：只根據事實、不准編數字、不准建議處置</li><li>使用者文字一律當資料，不當指示</li></ul></div>
-      <div class="box"><h3>出 AI 後</h3><ul><li>摘要標「草稿」；狀態由程式判斷</li><li>管理頁要密碼；回報內容一律顯示成純文字</li><li>提示注入實測：貼假系統通知，工具<b>沒有照做</b></li></ul></div>
+      <div class="box"><h3>出 AI 後</h3><ul><li>摘要標「僅供參考」；狀態由程式判斷</li><li>管理頁要密碼；回報內容一律顯示成純文字</li><li>提示注入實測：貼假系統通知，工具<b>沒有照做</b></li></ul></div>
     </div>
   </section>
 

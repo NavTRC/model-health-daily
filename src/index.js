@@ -1,6 +1,6 @@
 // 模型健康日報：Cloudflare Worker 後端
 // - 靜態頁面（public/）由 Assets 直接提供
-// - /api/summary：Workers AI 寫一句白話摘要（草稿），失敗時退回固定文字
+// - /api/summary：Workers AI 寫一句白話摘要（僅供參考），失敗時退回固定文字
 // - /api/report：使用者回報問題，存進 KV（REPORTS）
 // - /api/reports：負責人看回報清單、改處理狀態（需要 ADMIN_KEY）
 import { evaluate } from "../public/health.js";

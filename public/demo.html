@@ -107,7 +107,7 @@
       <div class="ar">↓</div>
       <div class="nd rule">程式規則：判斷哪支要人看<small>算今天／昨天／7 天平均 → 套三條門檻</small></div>
       <div class="ar">↓</div>
-      <div class="nd ai">AI：只寫兩句摘要草稿<small>拿程式算好的數字；標「以數字為準」</small></div>
+      <div class="nd ai">AI：只寫兩句摘要，僅供參考<small>拿程式算好的數字；標「以數字為準」</small></div>
       <div class="grp">回報</div>
       <div class="nd view">回報表單 → 存起來<small>不送給 AI</small></div>
       <div class="ar">↓</div>
@@ -147,7 +147,7 @@ const SCENES = [
   { s:"s-app",   sec:7.5, h:"紅色：異常", p:"缺件檢測一天掉了 12.4 點，可能是換料或光源。", act:()=>focus("#need .card:nth-child(1)") },
   { s:"s-app",   sec:7.6, h:"橘色：漂移", p:"印字檢測還沒跌破 95%，但連三天往下掉。", act:()=>focus("#need .card:nth-child(2)") },
   { s:"s-app",   sec:7.6, h:"黃色：資料異常", p:"資料只進來 3%，先查資料，別先怪模型。", act:()=>focus("#need .card:nth-child(3)") },
-  { s:"s-arch",  sec:9.1, h:"AI 只寫摘要草稿", p:"判斷靠程式規則；AI 曾把掉 12.4 點寫成「略低」，所以只當草稿。" },
+  { s:"s-arch",  sec:9.2, h:"AI 摘要只當參考", p:"判斷靠程式規則；AI 曾把掉 12.4 點寫成「略低」，所以只當參考。" },
   { s:"s-line",  sec:5.8, h:"看到不對，按「回報問題」", p:"選單右下那一格。", act:()=>hl(3) },
   { s:"s-app",   sec:6.4, h:"選模型、寫一句", p:"回報只會存起來，不會送給 AI。", act:()=>load("/report") },
   { s:"s-admin", sec:9.2, h:"人做決定", p:"負責人寫處理說明、改狀態；重新訓練、退回舊版、停用，都由人決定。" },
