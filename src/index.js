@@ -7,6 +7,7 @@
 import { evaluate } from "../public/health.js";
 import { lineWebhook } from "./line.js";
 import { maskPII } from "../public/mask.js";
+import { tidySummary } from "./summary-format.js";
 
 // 依序嘗試；2026-07 起部分模型只給付費方案，所以準備備援（避開課程建議跳過的中國廠商模型）
 const MODELS = ["@cf/meta/llama-3.1-8b-instruct", "@cf/meta/llama-3.2-3b-instruct", "@cf/google/gemma-3-12b-it", "@cf/mistral/mistral-7b-instruct-v0.1"];
@@ -44,30 +45,31 @@ async function summary(req, env, ctx, url) {
 
   // 同一天的摘要快取起來，避免每次打開都耗 Workers AI 額度
   const cache = caches.default;
-  const key = new Request(new URL(`/api/summary?d=${rows[0]?.date}&v=2`, url));
+  const key = new Request(new URL(`/api/summary?d=${rows[0]?.date}&v=3`, url));
   const hit = await cache.match(key);
   if (hit) return hit;
 
   let text = fallback, source = "rule", model = null;
   const errors = [];
   if (env.AI && need.length) {
+    const pts = x => (x > 0 ? "上升 " : x < 0 ? "下降 " : "持平 ") + (x ? Math.abs(x) + " 個百分點" : "");
     const facts = need.map(r =>
-      `${r.name}：今天辨識率 ${r.rate}%，比昨天 ${r.vsYesterday}，筆數為平常的 ${Math.round(r.nRatio * 100)}%，狀態 ${r.statuses.map(s => s.label).join("、")}`).join("\n");
+      `${r.name}：今天辨識率 ${r.rate}%，比昨天${pts(r.vsYesterday)}，筆數為平常的 ${Math.round(r.nRatio * 100)}%，狀態 ${r.statuses.map(s => s.label).join("、")}`).join("\n");
     const messages = [
-      { role: "system", content: "你是產線模型維運的助理。只根據使用者給的事實，用繁體中文寫兩句話的摘要給工程師。不要編任何新數字，不要建議重新訓練、退回舊版或停用，那是人決定的。" },
+      { role: "system", content: "你是產線模型維運的助理。只根據使用者給的事實，用繁體中文寫摘要給工程師。格式固定：每支要人看的模型寫一行，以「・」開頭，每行 40 字以內，句尾用「。」；不要開場白、不要結語。數字照抄，不要編任何新數字；不要建議重新訓練、退回舊版或停用，那是人決定的。" },
       { role: "user", content: `資料日 ${rows[0].date}，共 ${rows.length} 支模型，要人看的有：
 ${facts}` },
     ];
     for (const m of MODELS) {
       try {
-        const res = await env.AI.run(m, { messages, max_tokens: 160 });
-        const out = (res && (res.response || res.result?.response) || "").toString().trim();
+        const res = await env.AI.run(m, { messages, max_tokens: 300 });
+        const out = tidySummary((res && (res.response || res.result?.response) || "").toString(), need.length);
         if (out) { text = out; source = "ai"; model = m; break; }
-        errors.push(`${m}: 空回應`);
+        errors.push(`${m}: 格式不符或空回應`);
       } catch (e) { errors.push(`${m}: ${String(e && e.message || e).slice(0, 120)}`); }
     }
   }
-  const resp = json({ ok: true, text, source, model, errors: source === "ai" ? undefined : errors, date: rows[0]?.date });
+  const resp = json({ ok: true, text, source, model, at: new Date().toISOString(), errors: source === "ai" ? undefined : errors, date: rows[0]?.date });
   // 只有成功的 AI 結果才快取；規則文字不快取，下次再試 AI
   if (source !== "ai") return resp;
   resp.headers.set("cache-control", "public, max-age=3600");
