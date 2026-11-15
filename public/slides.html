@@ -141,7 +141,7 @@
       <div class="box"><span class="pill" style="background:#c9a227">資料異常</span><p>今天筆數不到平常一半：<b>先查資料有沒有進來，不要先怪模型</b>。</p></div>
       <div class="box"><span class="pill" style="background:#3fb37f">正常</span><p>不吵你，摺在最下面。</p></div>
     </div>
-    <p class="mute">每張卡片有 7 天趨勢線、推測原因（標明「推測」）和可以選的處理方式。最上方的 AI 摘要僅供參考，以數字為準。</p>
+    <p class="mute">每張卡片有 7 天趨勢線、推測原因（標明「推測」）和可以選的處理方式。最上方的 AI 摘要僅供參考，以數字為準。也可以在官方帳號聊天室直接打「今天」「缺件」「門檻」問。</p>
   </section>
 
   <section class="s">
@@ -227,6 +227,11 @@
         <div class="nd data">存進 Cloudflare KV<small>不送給 AI</small></div><i>→</i>
         <div class="nd human">負責人管理頁<small>要密碼；改狀態、寫處理說明</small></div>
       </div>
+      <div class="lane"><div class="ln">LINE 問答</div>
+        <div class="nd view">聊天室打字<small>「今天」「缺件」「門檻」…</small></div><i>→</i>
+        <div class="nd rule">程式規則回覆<small>驗證 LINE 簽章；只比對關鍵字，不送給 AI</small></div><i>→</i>
+        <div class="nd view">回應訊息<small>不吃每月 200 則推播額度</small></div>
+      </div>
       <div class="lane"><div class="ln">決定</div>
         <div class="nd human" style="flex:1">人：到產線確認 → 決定重新訓練／退回舊版／停用、修改門檻</div>
       </div>
@@ -261,7 +266,7 @@
     <div class="grid">
       <div class="box"><h3>接真資料</h3>接實際的推論 log，先在本機去識別化；改用公司帳號，repo 設私人。</div>
       <div class="box"><h3>加登入</h3>看板和管理頁只開放給相關人員；管理頁改成個人帳號登入。</div>
-      <div class="box"><h3>LINE 推播與問答</h3>異常才主動推播（免費版每月 200 則）；用 Messaging API 讓人在 LINE 問「今天哪支有問題」，回覆訊息不吃推播額度。</div>
+      <div class="box"><h3>LINE 主動推播</h3>聊天問答已上線（規則回覆，不送 AI）；下一步是異常時才主動推播給負責人（免費版每月 200 則，所以只推異常）。</div>
     </div>
   </section>
 </div>
