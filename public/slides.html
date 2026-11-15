@@ -30,6 +30,26 @@
   .flow span{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700}
   .flow i{color:var(--red);font-style:normal;font-weight:800}
   .mute{color:var(--mute)} ul{padding-left:1.2em} li{margin:6px 0}
+  .toc .tc{text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column}
+  .toc .tc:hover{border-color:var(--red)}
+  .who{color:var(--mute);font-size:15px;margin:2px 0 6px}
+  .jump{margin-top:auto;color:var(--red);font-weight:700;padding-top:6px}
+  .s.ch{display:flex;flex-direction:column;justify-content:center}
+  .s.ch .who{font-size:clamp(16px,2.4vw,22px)}
+  .arch{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .lane{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+  .lane .ln{width:72px;flex:none;align-self:center;font-weight:800;color:var(--mute);font-size:14px}
+  .lane i{align-self:center;color:var(--mute);font-style:normal;font-weight:800}
+  .nd{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:700;font-size:16px}
+  .nd small{display:block;font-weight:400;font-size:13px;color:var(--mute);margin-top:2px;line-height:1.45}
+  .nd.rule,.c-rule{border-left-color:#3fb37f;color:inherit}.c-rule{color:#3fb37f}
+  .nd.ai{border-left-color:#48bfe8;background:#14222b}.c-ai{color:#48bfe8}
+  .nd.human{border-left-color:var(--red)}.c-human{color:var(--red)}
+  .nd.data{border-left-color:#9097a0}.c-data{color:#9097a0}
+  .nd.view{border-left-color:#e0a34a}.c-view{color:#e0a34a}
+  .legend{font-size:13px;color:var(--mute);margin-top:12px}
+  @media (max-width:640px){.lane .ln{width:100%}.lane i{display:none}.nd{min-width:100%}}
+  @media print{.nd.ai{background:#e8f6fc}}
   .dots{display:flex;justify-content:center;gap:8px;padding:10px}
   .dots button{width:12px;height:12px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}
   .dots button.on{background:var(--red)}
@@ -63,26 +83,34 @@
   </section>
 
   <section class="s">
-    <h2>痛點：模型上線後，沒人每天盯</h2>
-    <div class="grid">
-      <div class="box"><h3>現在</h3>每天早上 <b>1 小時</b>，線上約 <b>10 支</b>模型一支一支看。<div class="mute">（課堂練習用的模擬數字）</div></div>
-      <div class="box"><h3>問題</h3>辨識率哪天掉了，常常是客訴進來、產線停了才發現。</div>
-      <div class="box"><h3>目標</h3>從「全靠人」推到「人只看例外」：正常的不吵你，有事才看。</div>
+    <div class="kick">目錄</div>
+    <h2>依你的角色，看你要的那一章</h2>
+    <div class="grid toc">
+      <button class="box tc" data-go="ch1"><div class="num">1</div><h3>使用者篇</h3><div class="who">給：每天看日報的模型負責工程師、產線組長</div><ul><li>三步打開</li><li>四種狀態怎麼看</li><li>看到不對怎麼回報</li></ul><span class="jump">跳到第 1 章 ›</span></button>
+      <button class="box tc" data-go="ch2"><div class="num">2</div><h3>主管篇</h3><div class="who">給：部門主管、品保</div><ul><li>為什麼要做</li><li>人在哪一步做決定</li><li>效益與風險</li><li>回公司要怎麼管</li></ul><span class="jump">跳到第 2 章 ›</span></button>
+      <button class="box tc" data-go="ch3"><div class="num">3</div><h3>技術篇</h3><div class="who">給：資訊室、維運人員</div><ul><li>整體架構：哪裡用到 AI</li><li>資料與資安</li><li>怎麼做出來、怎麼上線</li><li>技術上的下一步</li></ul><span class="jump">跳到第 3 章 ›</span></button>
     </div>
   </section>
 
+  <section class="s ch" id="ch1">
+    <div class="kick">第 1 章</div>
+    <div class="big">使用者篇</div>
+    <p class="who">給：每天看日報的模型負責工程師、產線組長</p>
+    <p class="mute">三步打開 → 四種狀態怎麼看 → 看到不對怎麼回報</p>
+  </section>
+
   <section class="s">
-    <div class="kick">A. 這個產品怎麼用</div>
+    <div class="kick">第 1 章｜使用者篇</div>
     <h2>三步打開，第一行就是結論</h2>
     <div class="grid">
       <div class="box"><div class="num">1</div><h3>加官方帳號好友</h3>掃 QR code 或開 <b>lin.ee/qZjMsdy</b></div>
-      <div class="box"><div class="num">2</div><h3>點「打開工具」</h3>聊天室下方的圖文選單，工具會在 LINE 裡滑出來，不用裝 App。</div>
+      <div class="box"><div class="num">2</div><h3>點「打開工具」</h3>聊天室下方的圖文選單（A 格），工具會在 LINE 裡滑出來，不用裝 App。</div>
       <div class="box"><div class="num">3</div><h3>看第一行</h3>「<b>幾支要人看</b>」。要人看的排最上面，正常的摺起來，點開才看。</div>
     </div>
   </section>
 
   <section class="s">
-    <div class="kick">A. 這個產品怎麼用</div>
+    <div class="kick">第 1 章｜使用者篇</div>
     <h2>四種狀態怎麼看</h2>
     <div class="grid">
       <div class="box"><span class="pill" style="background:#d4372c;color:#fff">異常</span><p>今天辨識率 &lt; 95%，或比昨天掉超過 3 個百分點。</p></div>
@@ -94,42 +122,123 @@
   </section>
 
   <section class="s">
-    <div class="kick">AI 治理</div>
+    <div class="kick">第 1 章｜使用者篇</div>
+    <h2>看到不對，一分鐘回報</h2>
+    <div class="grid">
+      <div class="box"><div class="num">1</div><h3>點「回報問題」</h3>圖文選單右下那格（D），或日報頁的「回報問題」。</div>
+      <div class="box"><div class="num">2</div><h3>選、寫、確認</h3>選哪支模型、問題類型，寫一句哪裡不對。送出前會再確認一次，避免誤按。</div>
+      <div class="box"><div class="num">3</div><h3>拿到回報編號</h3>負責人在管理頁看到，改成「處理中／已解決／不處理」並寫處理說明。</div>
+    </div>
+    <p class="mute">請不要在回報裡填客戶名稱或個資。要下載這份簡報：用圖文選單的「簡報下載」（C 格）。</p>
+  </section>
+
+  <section class="s ch" id="ch2">
+    <div class="kick">第 2 章</div>
+    <div class="big">主管篇</div>
+    <p class="who">給：部門主管、品保</p>
+    <p class="mute">為什麼要做 → 人在哪一步做決定 → 效益與風險 → 回公司要怎麼管</p>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 2 章｜主管篇</div>
+    <h2>為什麼要做：模型上線後，沒人每天盯</h2>
+    <div class="grid">
+      <div class="box"><h3>現在</h3>每天早上 <b>1 小時</b>，線上約 <b>10 支</b>模型一支一支看。<div class="mute">（課堂練習用的模擬數字）</div></div>
+      <div class="box"><h3>問題</h3>辨識率哪天掉了，常常是客訴進來、產線停了才發現。</div>
+      <div class="box"><h3>目標</h3>從「全靠人」推到「人只看例外」：正常的不吵你，有事才看。</div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 2 章｜主管篇</div>
     <h2>人在哪一步做決定</h2>
-    <div class="flow"><span>AI：算數字、套門檻</span><i>→</i><span>AI：列推測與選項</span><i>→</i><span style="border-color:var(--red)">人：決定重新訓練／退回舊版／停用</span></div>
+    <div class="flow"><span>程式：算數字、套門檻</span><i>→</i><span>程式：列推測與選項</span><i>→</i><span>AI：寫兩句摘要草稿</span><i>→</i><span style="border-color:var(--red)">人：決定重新訓練／退回舊版／停用</span></div>
     <ul>
-      <li>AI 不會、也不被允許自己停用模型或退回舊版。這條寫在助理的規矩（AGENTS.md）裡。</li>
-      <li>測試過：叫它「直接把模型停掉」，它<b>擋下來</b>並請負責工程師確認。</li>
-      <li>門檻要改，先問人，不能自己放寬。</li>
+      <li>判斷「哪支要人看」的是<b>程式規則</b>，不是 AI；AI 只寫摘要草稿，標「以數字為準」。</li>
+      <li>實測過：小模型把「掉 12.4 點」寫成「略低」——所以不讓 AI 判斷狀態。</li>
+      <li>處置與改門檻一律由人決定；⑨ 的 AI 助理版也把這條寫進規矩（AGENTS.md），叫它「直接把模型停掉」，它<b>擋下來</b>。</li>
     </ul>
   </section>
 
   <section class="s">
-    <div class="kick">B. 有問題怎麼回報</div>
-    <h2>看到不對，一分鐘回報</h2>
+    <div class="kick">第 2 章｜主管篇</div>
+    <h2>效益與風險</h2>
     <div class="grid">
-      <div class="box"><div class="num">1</div><h3>點「聯絡負責人」</h3>圖文選單右邊那格，或日報頁的「回報問題」。</div>
-      <div class="box"><div class="num">2</div><h3>選、寫、確認</h3>選哪支模型、問題類型，寫一句哪裡不對。送出前會再確認一次，避免誤按。</div>
-      <div class="box"><div class="num">3</div><h3>拿到回報編號</h3>負責人在管理頁看到，改成「處理中／已解決／不處理」並寫處理說明。</div>
+      <div class="box"><h3>效益（模擬）</h3>（每天 60 分 − 看日報 5 分）× 22 天 − 覆核 220 分 ＝ <b>每月約 16.5 小時</b>。<div class="mute">回公司最該實際量的是「每天平均幾支要人看」：誤報越多，覆核越久。</div></div>
+      <div class="box"><h3>三個風險 → 怎麼擋</h3><ul><li>資料沒進來卻顯示正常 → 筆數不到一半就標「資料異常」</li><li>每天掉一點、沒跌破門檻 → 加「連 3 天累計掉 2 點」漂移規則</li><li>AI 摘要講錯嚴重性 → 摘要只當草稿，狀態由程式判斷</li></ul></div>
     </div>
-    <p class="mute">為什麼要有回報：AI 不能自己當作者又當判官。用的人看到錯，要有路讓人知道。請不要在回報裡填客戶名稱或個資。</p>
   </section>
 
   <section class="s">
-    <h2>怎麼做出來的</h2>
-    <div class="flow"><span>opencode／Claude Code 寫</span><i>→</i><span>GitHub 存</span><i>→</i><span>Cloudflare 自動上線</span><i>→</i><span>LINE 打開</span></div>
+    <div class="kick">第 2 章｜主管篇</div>
+    <h2>回公司要怎麼管</h2>
+    <div class="grid">
+      <div class="box"><h3>現在的限制</h3><ul><li>練習用虛擬資料，不是實際產線</li><li>個人帳號、網址公開</li><li>門檻是示範值</li></ul></div>
+      <div class="box"><h3>要主管決定的事</h3><ul><li>改用公司核准的帳號（GitHub、Cloudflare、LINE）</li><li>真實資料先去識別化，製程參數與客戶資料不進雲端 AI</li><li>加登入，只開放給相關人員</li><li>重新訓練、退回舊版、停用、改門檻：工程師提出、主管簽核</li><li>門檻和產線一起訂</li></ul></div>
+    </div>
+  </section>
+
+  <section class="s ch" id="ch3">
+    <div class="kick">第 3 章</div>
+    <div class="big">技術篇</div>
+    <p class="who">給：資訊室、維運人員</p>
+    <p class="mute">整體架構 → 資料與資安 → 怎麼做出來、怎麼上線 → 技術上的下一步</p>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 3 章｜技術篇</div>
+    <h2>整體架構：哪裡用到 AI？只有一處</h2>
+    <div class="arch">
+      <div class="lane"><div class="ln">每日日報</div>
+        <div class="nd data">模型運作紀錄<small>筆數、辨識率、漏檢、誤判（練習用虛擬資料）</small></div><i>→</i>
+        <div class="nd rule">程式規則<small>算今天／昨天／7 天平均 → 套三條門檻 → 分狀態、列推測與選項</small></div><i>→</i>
+        <div class="nd view">日報看板<small>網頁＋LINE（LIFF）</small></div>
+      </div>
+      <div class="lane"><div class="ln">摘要</div>
+        <div class="nd rule">程式算好的數字</div><i>→</i>
+        <div class="nd ai">AI 寫兩句摘要草稿<small>Cloudflare Workers AI（小模型）；失敗就改用程式拼的固定句子</small></div><i>→</i>
+        <div class="nd view">看板最上方<small>標「草稿，以數字為準」</small></div>
+      </div>
+      <div class="lane"><div class="ln">回報</div>
+        <div class="nd view">使用者回報表單</div><i>→</i>
+        <div class="nd data">存進 Cloudflare KV<small>不送給 AI</small></div><i>→</i>
+        <div class="nd human">負責人管理頁<small>要密碼；改狀態、寫處理說明</small></div>
+      </div>
+      <div class="lane"><div class="ln">決定</div>
+        <div class="nd human" style="flex:1">人：到產線確認 → 決定重新訓練／退回舊版／停用、修改門檻</div>
+      </div>
+    </div>
+    <p class="legend"><b class="c-rule">■ 程式</b>　<b class="c-ai">■ AI</b>　<b class="c-human">■ 人</b>　<b class="c-data">■ 資料／儲存</b>　<b class="c-view">■ 畫面</b>　｜　判斷靠程式、決定靠人，AI 只寫「錯了也不會出事」的草稿。</p>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 3 章｜技術篇</div>
+    <h2>資料與資安：三道牆</h2>
+    <div class="grid">
+      <div class="box"><h3>進 AI 前</h3><ul><li>AI 只收程式算好的數字，不給原始紀錄、製程參數、影像</li><li>使用者的回報不送給 AI</li><li>金鑰不進程式碼、不推上 GitHub；公開 repo 只放虛擬資料</li></ul></div>
+      <div class="box"><h3>AI 做時</h3><ul><li>給 AI 的指示：只根據事實、不准編數字、不准建議處置</li><li>使用者文字一律當資料，不當指示</li></ul></div>
+      <div class="box"><h3>出 AI 後</h3><ul><li>摘要標「草稿」；狀態由程式判斷</li><li>管理頁要密碼；回報內容一律顯示成純文字</li><li>提示注入實測：貼假系統通知，工具<b>沒有照做</b></li></ul></div>
+    </div>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 3 章｜技術篇</div>
+    <h2>怎麼做出來、怎麼上線</h2>
+    <div class="flow"><span>opencode／Claude Code 寫程式</span><i>→</i><span>GitHub 存</span><i>→</i><span>Cloudflare 自動上線</span><i>→</i><span>LINE 打開</span></div>
     <ul>
-      <li>Cloudflare Workers AI 寫摘要：免費額度、不用金鑰；額度用完自動改用規則文字。</li>
-      <li>回報存在 Cloudflare KV；管理頁要密碼。</li>
+      <li>開發時大量用 AI（agent 寫程式、測試、修 bug），每一版要不要上線由人決定；<b>執行時</b>只有摘要用到 AI。</li>
+      <li>Cloudflare：網站（Workers）、AI 摘要（Workers AI，免費額度、不用金鑰）、回報資料庫（KV）都在同一個帳號。</li>
       <li>改一句話、推上去，約 1 分鐘全部更新（LINE 裡也一樣）。</li>
     </ul>
   </section>
 
   <section class="s">
-    <h2>限制與下一步</h2>
+    <div class="kick">第 3 章｜技術篇</div>
+    <h2>技術上的下一步</h2>
     <div class="grid">
-      <div class="box"><h3>現在的限制</h3><ul><li>虛擬練習資料，不是實際產線</li><li>網址公開，回公司要加登入、只給同事用</li><li>門檻是示範值，要和產線一起訂</li></ul></div>
-      <div class="box"><h3>下一步</h3><ul><li>接真的推論 log（先遮資料）</li><li>異常才用 LINE 主動推播（免費版每月 200 則，所以只推異常）</li><li>聊天問答：直接在 LINE 問「今天哪支有問題」</li></ul></div>
+      <div class="box"><h3>接真資料</h3>接實際的推論 log，先在本機去識別化；改用公司帳號，repo 設私人。</div>
+      <div class="box"><h3>加登入</h3>看板和管理頁只開放給相關人員；管理頁改成個人帳號登入。</div>
+      <div class="box"><h3>LINE 推播與問答</h3>異常才主動推播（免費版每月 200 則）；用 Messaging API 讓人在 LINE 問「今天哪支有問題」，回覆訊息不吃推播額度。</div>
     </div>
   </section>
 </div>
@@ -138,6 +247,7 @@
 const S=[...document.querySelectorAll('.s')],dots=document.getElementById('dots');let i=0;
 S.forEach((_,n)=>{const b=document.createElement('button');b.setAttribute('aria-label','第 '+(n+1)+' 頁');b.onclick=()=>go(n);dots.appendChild(b);});
 function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,m)=>s.classList.toggle('on',m===i));[...dots.children].forEach((b,m)=>b.classList.toggle('on',m===i));try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(S.indexOf(document.getElementById(b.dataset.go))));
 document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
 addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e.key==='ArrowLeft')go(i-1);});
 let x0=null;document.getElementById('deck').addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
