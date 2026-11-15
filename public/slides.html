@@ -30,6 +30,7 @@
   .flow span{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700}
   .flow i{color:var(--red);font-style:normal;font-weight:800}
   .mute{color:var(--mute)} ul{padding-left:1.2em} li{margin:6px 0}
+  .grid.g2{grid-template-columns:1fr 2.2fr} @media (max-width:640px){.grid.g2{grid-template-columns:1fr}}
   .toc .tc{text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column}
   .toc .tc:hover{border-color:var(--red)}
   .who{color:var(--mute);font-size:15px;margin:2px 0 6px}
@@ -110,8 +111,8 @@
     <h2>依你的角色，看你要的那一章</h2>
     <div class="grid toc">
       <button class="box tc" data-go="ch1"><div class="num">1</div><h3>使用者篇</h3><div class="who">給：每天看日報的模型負責工程師、產線組長</div><ul><li>三步打開</li><li>四種狀態怎麼看</li><li>看到不對怎麼回報</li></ul><span class="jump">跳到第 1 章 ›</span></button>
-      <button class="box tc" data-go="ch2"><div class="num">2</div><h3>主管篇</h3><div class="who">給：部門主管、品保</div><ul><li>為什麼要做</li><li>人在哪一步做決定</li><li>效益與風險</li><li>回公司要怎麼管</li></ul><span class="jump">跳到第 2 章 ›</span></button>
-      <button class="box tc" data-go="ch3"><div class="num">3</div><h3>技術篇</h3><div class="who">給：資訊室、維運人員</div><ul><li>整體架構：哪裡用到 AI</li><li>資料與資安</li><li>怎麼做出來、怎麼上線</li><li>技術上的下一步</li></ul><span class="jump">跳到第 3 章 ›</span></button>
+      <button class="box tc" data-go="ch2"><div class="num">2</div><h3>主管篇</h3><div class="who">給：部門主管、品保</div><ul><li>為什麼要做</li><li>人在哪一步做決定</li><li>效益與風險</li><li>回公司要怎麼管（治理五條）</li></ul><span class="jump">跳到第 2 章 ›</span></button>
+      <button class="box tc" data-go="ch3"><div class="num">3</div><h3>技術篇</h3><div class="who">給：資訊室、維運人員</div><ul><li>整體架構：哪裡用到 AI</li><li>資料與資安</li><li>怎麼做出來、怎麼上線</li><li>用到 D3 哪幾關</li><li>技術上的下一步</li></ul><span class="jump">跳到第 3 章 ›</span></button>
     </div>
   </section>
 
@@ -159,7 +160,7 @@
     <div class="kick">第 2 章</div>
     <div class="big">主管篇</div>
     <p class="who">給：部門主管、品保</p>
-    <p class="mute">為什麼要做 → 人在哪一步做決定 → 效益與風險 → 回公司要怎麼管</p>
+    <p class="mute">為什麼要做 → 人在哪一步做決定 → 效益與風險 → 回公司要怎麼管（治理五條）</p>
   </section>
 
   <section class="s">
@@ -194,10 +195,10 @@
 
   <section class="s">
     <div class="kick">第 2 章｜主管篇</div>
-    <h2>回公司要怎麼管</h2>
-    <div class="grid">
+    <h2>回公司要怎麼管：治理五條</h2>
+    <div class="grid g2">
       <div class="box"><h3>現在的限制</h3><ul><li>練習用虛擬資料，不是實際產線</li><li>個人帳號、網址公開</li><li>門檻是示範值</li></ul></div>
-      <div class="box"><h3>要主管決定的事</h3><ul><li>改用公司核准的帳號（GitHub、Cloudflare、LINE）</li><li>真實資料先去識別化，製程參數與客戶資料不進雲端 AI</li><li>加登入，只開放給相關人員</li><li>重新訓練、退回舊版、停用、改門檻：工程師提出、主管簽核</li><li>門檻和產線一起訂</li></ul></div>
+      <div class="box"><h3>治理五條（要主管決定）</h3><ul><li><b>工具和帳號誰核准</b>：改用公司核准的帳號（GitHub、Cloudflare、LINE）</li><li><b>什麼資料能進 AI、上網</b>：真實資料先去識別化，製程參數與客戶資料不進雲端 AI；repo 設私人</li><li><b>誰能用</b>：加登入，只開放給相關人員</li><li><b>出事怎麼發現、怎麼停</b>：每週看回報和摘要出錯的紀錄；負責人可以隨時關掉 AI 摘要，只留規則判斷</li><li><b>哪一步一定要人簽</b>：重新訓練、退回舊版、停用、改門檻由工程師提出、主管簽核；門檻和產線一起訂</li></ul></div>
     </div>
   </section>
 
@@ -205,7 +206,7 @@
     <div class="kick">第 3 章</div>
     <div class="big">技術篇</div>
     <p class="who">給：資訊室、維運人員</p>
-    <p class="mute">整體架構 → 資料與資安 → 怎麼做出來、怎麼上線 → 技術上的下一步</p>
+    <p class="mute">整體架構 → 資料與資安 → 怎麼做出來、怎麼上線 → 用到 D3 哪幾關 → 技術上的下一步</p>
   </section>
 
   <section class="s">
@@ -258,6 +259,17 @@
       <li>Cloudflare：網站（Workers）、AI 摘要（Workers AI，免費額度、不用金鑰）、回報資料庫（KV）都在同一個帳號。</li>
       <li>改一句話、推上去，約 1 分鐘全部更新（LINE 裡也一樣）。</li>
     </ul>
+  </section>
+
+  <section class="s">
+    <div class="kick">第 3 章｜技術篇</div>
+    <h2>用到 D3 哪幾關</h2>
+    <div class="grid">
+      <div class="box"><h3>③ 綜合性盤點</h3>題目就是從自己的工作盤點表挑的：每天早上一支一支看模型，天天做、格式固定、看得出對錯。</div>
+      <div class="box"><h3>⑨ 專屬 AI 助理</h3>三條門檻、四種狀態、「處置由人決定」都來自 ⑨ 的 AGENTS.md；做成工具時程式（<code>health.js</code>）照同一份規則。</div>
+      <div class="box"><h3>④ 去識別化與規範</h3><code>mask.py</code> 的做法搬進工具，回報表單在裝置上先遮個資（<code>mask.js</code>）；規範.md 的限制寫進 AGENTS.md。</div>
+      <div class="box"><h3>② 抓幻覺</h3>AI 說的要對過出處；AI 摘要實測把「掉 12.4 點」寫成「略低」，所以摘要只當參考，狀態交給程式。</div>
+    </div>
   </section>
 
   <section class="s">
